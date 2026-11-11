@@ -189,6 +189,59 @@ export const LoginPage: React.FC = () => {
                 )}
               </button>
             </form>
+
+            {/* Quick One-Click Credentials */}
+            <div className="mt-6 pt-5 border-t border-slate-100">
+              <span className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+                Quick Fill Staff Accounts:
+              </span>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setUsername('admin');
+                    setPassword('Admin@123');
+                  }}
+                  className="rounded-xl border border-slate-200 bg-slate-50/80 p-2.5 text-left hover:bg-blue-50 hover:border-blue-300 transition group"
+                >
+                  <div className="font-extrabold text-slate-900 group-hover:text-blue-700">Admin</div>
+                  <div className="text-[10px] text-slate-500 font-mono mt-0.5">admin / Admin@123</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setUsername('cashier');
+                    setPassword('Cashier@123');
+                  }}
+                  className="rounded-xl border border-slate-200 bg-slate-50/80 p-2.5 text-left hover:bg-emerald-50 hover:border-emerald-300 transition group"
+                >
+                  <div className="font-extrabold text-slate-900 group-hover:text-emerald-700">Cashier (POS)</div>
+                  <div className="text-[10px] text-slate-500 font-mono mt-0.5">cashier / Cashier@123</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setUsername('manager');
+                    setPassword('Manager@123');
+                  }}
+                  className="rounded-xl border border-slate-200 bg-slate-50/80 p-2.5 text-left hover:bg-purple-50 hover:border-purple-300 transition group"
+                >
+                  <div className="font-extrabold text-slate-900 group-hover:text-purple-700">Manager</div>
+                  <div className="text-[10px] text-slate-500 font-mono mt-0.5">manager / Manager@123</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setUsername('inventory');
+                    setPassword('Inventory@123');
+                  }}
+                  className="rounded-xl border border-slate-200 bg-slate-50/80 p-2.5 text-left hover:bg-amber-50 hover:border-amber-300 transition group"
+                >
+                  <div className="font-extrabold text-slate-900 group-hover:text-amber-700">Inventory</div>
+                  <div className="text-[10px] text-slate-500 font-mono mt-0.5">inventory / Inventory@123</div>
+                </button>
+              </div>
+            </div>
           </div>
 
           <p className="mt-5 text-center text-xs text-slate-400">
