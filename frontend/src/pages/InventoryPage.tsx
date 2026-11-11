@@ -14,6 +14,9 @@ import {
   AlertCircle,
   Truck,
   RotateCcw,
+  ShieldCheck,
+  CheckCircle2,
+  X,
 } from 'lucide-react';
 import axiosClient from '../api/axiosClient';
 
@@ -163,23 +166,28 @@ export const InventoryPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-5">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-black text-slate-900 tracking-tight">Inventory & Stock Tracking</h1>
-          <p className="text-xs text-slate-500 mt-0.5">Real-time valuation, physical adjustments & immutable audit trail</p>
+    <div className="space-y-5 antialiased">
+      {/* Page Header Card */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-200/80 shadow-2xs">
+            <Layers className="h-6 w-6" />
+          </div>
+          <div>
+            <h1 className="text-xl font-black text-slate-900 tracking-tight">Inventory &amp; Stock Management</h1>
+            <p className="text-xs text-slate-500 mt-0.5">Real-time asset valuation, stock adjustment reconciliation &amp; audit trails</p>
+          </div>
         </div>
 
-        {/* Tab Switcher */}
-        <div className="flex rounded-lg bg-slate-200 p-1 text-xs font-semibold">
+        {/* Tab Switcher Pills */}
+        <div className="flex rounded-xl bg-slate-100 p-1 text-xs font-bold border border-slate-200/80">
           <button
             onClick={() => {
               setActiveTab('status');
               setPage(1);
             }}
-            className={`rounded-md px-3 py-1.5 transition ${
-              activeTab === 'status' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+            className={`rounded-lg px-3.5 py-1.5 transition ${
+              activeTab === 'status' ? 'bg-white text-blue-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             Current Stock ({summary?.totalProducts || 0})
@@ -189,19 +197,19 @@ export const InventoryPage: React.FC = () => {
               setActiveTab('reorders');
               setPage(1);
             }}
-            className={`rounded-md px-3 py-1.5 transition ${
-              activeTab === 'reorders' ? 'bg-white text-amber-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+            className={`rounded-lg px-3.5 py-1.5 transition ${
+              activeTab === 'reorders' ? 'bg-white text-amber-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            Reorder Alerts ({Number(summary?.lowStockCount || 0) + Number(summary?.outOfStockCount || 0)})
+            Reorders ({Number(summary?.lowStockCount || 0) + Number(summary?.outOfStockCount || 0)})
           </button>
           <button
             onClick={() => {
               setActiveTab('movements');
               setPage(1);
             }}
-            className={`rounded-md px-3 py-1.5 transition ${
-              activeTab === 'movements' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+            className={`rounded-lg px-3.5 py-1.5 transition ${
+              activeTab === 'movements' ? 'bg-white text-blue-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             Audit Trail
@@ -209,23 +217,27 @@ export const InventoryPage: React.FC = () => {
         </div>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-white border border-slate-200 rounded-xl p-3 shadow-sm">
+      {/* Primary KPI Cards Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-slate-500 uppercase">Valuation (Cost)</span>
-            <DollarSign className="w-4 h-4 text-blue-600" />
+            <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Valuation (Cost)</span>
+            <div className="p-1 rounded-md bg-blue-50 text-blue-600">
+              <DollarSign className="w-3.5 h-3.5" />
+            </div>
           </div>
           <div className="text-lg font-black text-slate-900 mt-1 font-mono">
             ₹{summary ? summary.valuationCost.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'}
           </div>
-          <div className="text-[10px] text-slate-400 mt-0.5">Purchased inventory asset value</div>
+          <div className="text-[10px] text-slate-400 mt-0.5">Purchased inventory asset cost</div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-3 shadow-sm">
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-slate-500 uppercase">Retail Value</span>
-            <TrendingUp className="w-4 h-4 text-emerald-600" />
+            <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Retail Value</span>
+            <div className="p-1 rounded-md bg-emerald-50 text-emerald-600">
+              <TrendingUp className="w-3.5 h-3.5" />
+            </div>
           </div>
           <div className="text-lg font-black text-slate-900 mt-1 font-mono">
             ₹{summary ? summary.valuationRetail.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'}
@@ -233,10 +245,12 @@ export const InventoryPage: React.FC = () => {
           <div className="text-[10px] text-slate-400 mt-0.5">Estimated gross sales realization</div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-3 shadow-sm">
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-slate-500 uppercase">Potential Margin</span>
-            <Package className="w-4 h-4 text-indigo-600" />
+            <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Potential Margin</span>
+            <div className="p-1 rounded-md bg-indigo-50 text-indigo-600">
+              <Package className="w-3.5 h-3.5" />
+            </div>
           </div>
           <div className="text-lg font-black text-emerald-600 mt-1 font-mono">
             ₹{summary ? summary.potentialProfit.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'}
@@ -244,14 +258,16 @@ export const InventoryPage: React.FC = () => {
           <div className="text-[10px] text-slate-400 mt-0.5">Projected profit across catalog</div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-3 shadow-sm">
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-slate-500 uppercase">Stock Health</span>
-            <AlertTriangle className="w-4 h-4 text-amber-500" />
+            <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Stock Health</span>
+            <div className="p-1 rounded-md bg-amber-50 text-amber-600">
+              <AlertTriangle className="w-3.5 h-3.5" />
+            </div>
           </div>
           <div className="flex items-baseline gap-2 mt-1">
             <span className="text-lg font-black text-rose-600">{summary?.outOfStockCount || 0} Out</span>
-            <span className="text-xs text-slate-400">/</span>
+            <span className="text-xs text-slate-300">/</span>
             <span className="text-sm font-bold text-amber-600">{summary?.lowStockCount || 0} Low</span>
           </div>
           <div className="text-[10px] text-slate-400 mt-0.5">Items needing replenishment</div>
@@ -262,9 +278,9 @@ export const InventoryPage: React.FC = () => {
       {activeTab === 'status' && (
         <div className="space-y-4">
           {/* Search bar */}
-          <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm flex items-center justify-between gap-4">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-3.5 shadow-xs flex items-center justify-between gap-4">
             <div className="relative max-w-md w-full">
-              <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+              <Search className="pointer-events-none absolute left-3.5 top-2.5 h-4 w-4 text-slate-400" />
               <input
                 type="text"
                 value={search}
@@ -273,81 +289,84 @@ export const InventoryPage: React.FC = () => {
                   setPage(1);
                 }}
                 placeholder="Filter by product name, barcode or SKU..."
-                className="w-full rounded-lg border border-slate-300 bg-slate-50 py-2 pl-9 pr-3 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 pl-10 pr-3 text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"
               />
             </div>
-            <div className="text-xs text-slate-500">
-              Showing page <strong className="text-slate-800">{page}</strong> of <strong className="text-slate-800">{totalPages}</strong>
+            <div className="text-xs text-slate-500 font-medium">
+              Showing page <strong className="text-slate-900 font-bold">{page}</strong> of <strong className="text-slate-900 font-bold">{totalPages}</strong>
             </div>
           </div>
 
           {/* Table */}
-          <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+          <div className="rounded-2xl border border-slate-200/90 bg-white shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 uppercase tracking-wider text-[11px]">
-                    <th className="p-3">Product</th>
-                    <th className="p-3">Category</th>
-                    <th className="p-3 text-right">Cost Price (₹)</th>
-                    <th className="p-3 text-right">Selling Price (₹)</th>
-                    <th className="p-3 text-right">In Stock</th>
-                    <th className="p-3 text-right">Stock Valuation</th>
-                    <th className="p-3 text-center">Status</th>
-                    <th className="p-3 text-center">Actions</th>
+                  <tr className="bg-slate-100/80 text-slate-600 font-extrabold border-b border-slate-200 uppercase tracking-wider text-[10px]">
+                    <th className="p-3.5">Product</th>
+                    <th className="p-3.5">Category</th>
+                    <th className="p-3.5 text-right">Cost Price (₹)</th>
+                    <th className="p-3.5 text-right">Selling Price (₹)</th>
+                    <th className="p-3.5 text-right">In Stock</th>
+                    <th className="p-3.5 text-right">Stock Valuation</th>
+                    <th className="p-3.5 text-center">Status</th>
+                    <th className="p-3.5 text-center">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {loading ? (
                     <tr>
-                      <td colSpan={8} className="p-8 text-center text-slate-400">
-                        Loading inventory records...
+                      <td colSpan={8} className="p-10 text-center text-slate-400">
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="h-6 w-6 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+                          <span className="text-xs font-semibold">Loading inventory records...</span>
+                        </div>
                       </td>
                     </tr>
                   ) : inventory.length === 0 ? (
                     <tr>
-                      <td colSpan={8} className="p-8 text-center text-slate-400">
+                      <td colSpan={8} className="p-10 text-center text-slate-400">
                         No inventory records found.
                       </td>
                     </tr>
                   ) : (
                     inventory.map((row) => (
-                      <tr key={row.id} className="hover:bg-slate-50 transition">
-                        <td className="p-3">
-                          <div className="font-bold text-slate-900">{row.name}</div>
-                          <div className="text-[10px] font-mono text-slate-500">Barcode: {row.barcode}</div>
+                      <tr key={row.id} className="hover:bg-slate-50/70 transition">
+                        <td className="p-3.5">
+                          <div className="font-extrabold text-slate-900 text-xs">{row.name}</div>
+                          <div className="text-[10px] font-mono text-slate-500 mt-0.5">Barcode: {row.barcode}</div>
                         </td>
-                        <td className="p-3 text-slate-600">{row.category_name}</td>
-                        <td className="p-3 text-right font-medium text-slate-600">
+                        <td className="p-3.5 text-slate-700 font-semibold">{row.category_name}</td>
+                        <td className="p-3.5 text-right font-medium text-slate-500 font-mono">
                           ₹{Number(row.purchase_price).toFixed(2)}
                         </td>
-                        <td className="p-3 text-right font-bold text-slate-900">
+                        <td className="p-3.5 text-right font-black text-slate-900 font-mono text-xs">
                           ₹{Number(row.selling_price).toFixed(2)}
                         </td>
-                        <td className="p-3 text-right font-bold text-slate-900">
+                        <td className="p-3.5 text-right font-black text-slate-900 font-mono text-xs">
                           {Number(row.current_stock)} {row.unit_code}
                         </td>
-                        <td className="p-3 text-right font-mono font-bold text-blue-700">
+                        <td className="p-3.5 text-right font-mono font-bold text-blue-700">
                           ₹{Number(row.stock_valuation).toFixed(2)}
                         </td>
-                        <td className="p-3 text-center">
+                        <td className="p-3.5 text-center">
                           <span
-                            className={`inline-block rounded px-2 py-0.5 text-[10px] font-bold ${
+                            className={`inline-block rounded-md px-2 py-0.5 text-[10px] font-bold border ${
                               row.stock_status === 'OUT_OF_STOCK'
-                                ? 'bg-red-100 text-red-800'
+                                ? 'bg-rose-50 text-rose-700 border-rose-200'
                                 : row.stock_status === 'LOW_STOCK'
-                                ? 'bg-amber-100 text-amber-800'
-                                : 'bg-emerald-100 text-emerald-800'
+                                ? 'bg-amber-50 text-amber-700 border-amber-200'
+                                : 'bg-emerald-50 text-emerald-700 border-emerald-200'
                             }`}
                           >
                             {row.stock_status.replace('_', ' ')}
                           </span>
                         </td>
-                        <td className="p-3 text-center">
+                        <td className="p-3.5 text-center">
                           <div className="flex items-center justify-center gap-1.5">
                             <button
                               onClick={() => openAdjustmentModal(row)}
-                              className="inline-flex items-center gap-1 rounded bg-slate-100 px-2 py-1 text-[11px] font-semibold text-slate-700 hover:bg-blue-600 hover:text-white transition"
+                              className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-1 text-[11px] font-bold text-slate-700 hover:bg-blue-600 hover:text-white transition shadow-2xs"
                               title="Stock Adjustment"
                             >
                               <ArrowUpDown className="h-3 w-3" />
@@ -355,7 +374,7 @@ export const InventoryPage: React.FC = () => {
                             </button>
                             <button
                               onClick={() => openAdjustmentModal(row, 'SUBTRACT', 'Damaged / expired product write-off')}
-                              className="inline-flex items-center gap-1 rounded bg-rose-50 px-2 py-1 text-[11px] font-semibold text-rose-700 hover:bg-rose-600 hover:text-white transition"
+                              className="inline-flex items-center gap-1 rounded-lg bg-rose-50 px-2 py-1 text-[11px] font-bold text-rose-700 hover:bg-rose-600 hover:text-white transition shadow-2xs border border-rose-200/80"
                               title="Write off damaged or expired stock"
                             >
                               <AlertCircle className="h-3 w-3" />
@@ -372,19 +391,21 @@ export const InventoryPage: React.FC = () => {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="p-3 border-t border-slate-200 flex items-center justify-between text-xs">
+              <div className="p-3.5 border-t border-slate-200 bg-slate-50/80 flex items-center justify-between text-xs">
                 <button
                   disabled={page <= 1}
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  className="px-3 py-1 rounded border border-slate-300 text-slate-600 disabled:opacity-40 hover:bg-slate-50"
+                  className="px-3 py-1 rounded-lg border border-slate-300 bg-white font-bold text-slate-700 disabled:opacity-40 hover:bg-slate-50 shadow-2xs"
                 >
                   Previous
                 </button>
-                <span className="text-slate-500 font-medium">Page {page} of {totalPages}</span>
+                <span className="font-bold text-slate-800">
+                  Page {page} of {totalPages}
+                </span>
                 <button
                   disabled={page >= totalPages}
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                  className="px-3 py-1 rounded border border-slate-300 text-slate-600 disabled:opacity-40 hover:bg-slate-50"
+                  className="px-3 py-1 rounded-lg border border-slate-300 bg-white font-bold text-slate-700 disabled:opacity-40 hover:bg-slate-50 shadow-2xs"
                 >
                   Next
                 </button>
@@ -394,70 +415,62 @@ export const InventoryPage: React.FC = () => {
         </div>
       )}
 
-      {/* Tab: Reorder Alerts */}
+      {/* Tab: Reorders / Low Stock Alerts */}
       {activeTab === 'reorders' && (
         <div className="space-y-4">
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center gap-3">
-            <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />
-            <div className="text-xs text-amber-800">
-              <strong className="font-bold">Replenishment Engine:</strong> Showing products whose on-hand quantity is at or below the minimum reorder threshold. Recommended reorder quantities are computed dynamically to restore optimal buffer stock.
-            </div>
-          </div>
-
-          <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+          <div className="rounded-2xl border border-slate-200/90 bg-white shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 uppercase tracking-wider text-[11px]">
-                    <th className="p-3">Product Name</th>
-                    <th className="p-3">Category</th>
-                    <th className="p-3 text-right">Current Stock</th>
-                    <th className="p-3 text-right">Min Threshold</th>
-                    <th className="p-3 text-right">Suggested Reorder</th>
-                    <th className="p-3">Last Known Supplier</th>
-                    <th className="p-3 text-center">Quick Action</th>
+                  <tr className="bg-slate-100/80 text-slate-600 font-extrabold border-b border-slate-200 uppercase tracking-wider text-[10px]">
+                    <th className="p-3.5">Product Name</th>
+                    <th className="p-3.5">Category</th>
+                    <th className="p-3.5 text-right">Current Stock</th>
+                    <th className="p-3.5 text-right">Min Threshold</th>
+                    <th className="p-3.5 text-right">Recommended Reorder</th>
+                    <th className="p-3.5 text-center">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {loading ? (
                     <tr>
-                      <td colSpan={7} className="p-8 text-center text-slate-400">Loading reorder suggestions...</td>
+                      <td colSpan={6} className="p-10 text-center text-slate-400">
+                        Loading reorder alerts...
+                      </td>
                     </tr>
                   ) : lowStockItems.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="p-8 text-center text-emerald-600 font-semibold">
-                        All products are sufficiently stocked! No reorders required right now.
+                      <td colSpan={6} className="p-10 text-center text-slate-400">
+                        <CheckCircle2 className="h-8 w-8 text-emerald-500 mx-auto mb-2 opacity-80" />
+                        All products are currently stocked above their minimum reorder thresholds.
                       </td>
                     </tr>
                   ) : (
                     lowStockItems.map((item) => (
-                      <tr key={item.id} className="hover:bg-slate-50 transition">
-                        <td className="p-3">
-                          <div className="font-bold text-slate-900">{item.name}</div>
-                          <div className="text-[10px] font-mono text-slate-500">{item.barcode}</div>
+                      <tr key={item.id} className="hover:bg-slate-50/70 transition">
+                        <td className="p-3.5">
+                          <div className="font-extrabold text-slate-900 text-xs">{item.name}</div>
+                          <div className="text-[10px] font-mono text-slate-500 mt-0.5">Barcode: {item.barcode}</div>
                         </td>
-                        <td className="p-3 text-slate-600">{item.category_name}</td>
-                        <td className="p-3 text-right font-mono font-bold">
-                          <span className={item.current_stock <= 0 ? 'text-rose-600' : 'text-amber-600'}>
+                        <td className="p-3.5 text-slate-700 font-semibold">{item.category_name}</td>
+                        <td className="p-3.5 text-right font-black font-mono text-xs">
+                          <span className={Number(item.current_stock) <= 0 ? 'text-rose-600' : 'text-amber-600'}>
                             {Number(item.current_stock)} {item.unit_code}
                           </span>
                         </td>
-                        <td className="p-3 text-right font-mono text-slate-600">
+                        <td className="p-3.5 text-right font-mono font-medium text-slate-600">
                           {Number(item.min_stock_qty)} {item.unit_code}
                         </td>
-                        <td className="p-3 text-right font-mono font-black text-blue-700">
-                          +{Number(item.suggested_reorder_qty || 20)} {item.unit_code}
+                        <td className="p-3.5 text-right font-mono font-bold text-blue-700">
+                          +{Math.max(10, Math.round((Number(item.min_stock_qty) * 2) - Number(item.current_stock)))} {item.unit_code}
                         </td>
-                        <td className="p-3 text-slate-700 font-medium">
-                          {item.last_supplier_name || 'General Supplier'}
-                        </td>
-                        <td className="p-3 text-center">
+                        <td className="p-3.5 text-center">
                           <button
-                            onClick={() => openAdjustmentModal(item, 'ADD', 'Emergency replenishment')}
-                            className="inline-flex items-center gap-1 rounded bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700 hover:bg-blue-600 hover:text-white transition"
+                            onClick={() => openAdjustmentModal(item, 'ADD', 'Replenishment inward stock')}
+                            className="inline-flex items-center gap-1 rounded-lg bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700 hover:bg-blue-100 transition shadow-2xs"
                           >
-                            <Plus className="h-3.5 w-3.5" />
-                            <span>Add Stock</span>
+                            <Plus className="h-3 w-3" />
+                            <span>Receive Stock</span>
                           </button>
                         </td>
                       </tr>
@@ -470,100 +483,115 @@ export const InventoryPage: React.FC = () => {
         </div>
       )}
 
-      {/* Tab: Movements Audit Trail */}
+      {/* Tab: Movements / Audit Trail */}
       {activeTab === 'movements' && (
-        <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 uppercase tracking-wider text-[11px]">
-                  <th className="p-3">Date & Time</th>
-                  <th className="p-3">Product Name</th>
-                  <th className="p-3">Type</th>
-                  <th className="p-3 text-right">Quantity Changed</th>
-                  <th className="p-3 text-right">Balance After</th>
-                  <th className="p-3">Reference / Notes</th>
-                  <th className="p-3">Recorded By</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {loading ? (
-                  <tr>
-                    <td colSpan={7} className="p-8 text-center text-slate-400">
-                      Loading stock audit movements...
-                    </td>
+        <div className="space-y-4">
+          <div className="rounded-2xl border border-slate-200/90 bg-white shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="bg-slate-100/80 text-slate-600 font-extrabold border-b border-slate-200 uppercase tracking-wider text-[10px]">
+                    <th className="p-3.5">Timestamp</th>
+                    <th className="p-3.5">Product</th>
+                    <th className="p-3.5">Movement Type</th>
+                    <th className="p-3.5 text-right">Quantity</th>
+                    <th className="p-3.5 text-right">Balance After</th>
+                    <th className="p-3.5">Notes</th>
+                    <th className="p-3.5">Processed By</th>
                   </tr>
-                ) : movements.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} className="p-8 text-center text-slate-400">
-                      No stock movement history found.
-                    </td>
-                  </tr>
-                ) : (
-                  movements.map((m) => (
-                    <tr key={m.id} className="hover:bg-slate-50 transition">
-                      <td className="p-3 text-slate-600">{new Date(m.created_at).toLocaleString()}</td>
-                      <td className="p-3">
-                        <div className="font-bold text-slate-900">{m.product_name}</div>
-                        <div className="text-[10px] font-mono text-slate-400">{m.barcode}</div>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {loading ? (
+                    <tr>
+                      <td colSpan={7} className="p-10 text-center text-slate-400">
+                        Loading audit trail...
                       </td>
-                      <td className="p-3">
-                        <span
-                          className={`inline-block rounded px-2 py-0.5 text-[10px] font-bold ${
-                            m.movement_type === 'SALE'
-                              ? 'bg-rose-100 text-rose-800'
-                              : m.movement_type === 'PURCHASE' || m.movement_type === 'SALE_RETURN'
-                              ? 'bg-emerald-100 text-emerald-800'
-                              : 'bg-blue-100 text-blue-800'
-                          }`}
-                        >
-                          {m.movement_type}
-                        </span>
-                      </td>
-                      <td className="p-3 text-right font-bold font-mono">
-                        <span className={Number(m.quantity) >= 0 ? 'text-emerald-700' : 'text-rose-600'}>
-                          {Number(m.quantity) > 0 ? `+${Number(m.quantity)}` : Number(m.quantity)} {m.unit_code}
-                        </span>
-                      </td>
-                      <td className="p-3 text-right font-bold font-mono text-slate-900">
-                        {Number(m.balance_after)} {m.unit_code}
-                      </td>
-                      <td className="p-3 text-slate-600">{m.notes}</td>
-                      <td className="p-3 text-slate-700 font-medium">{m.created_by_name || 'System'}</td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : movements.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="p-10 text-center text-slate-400">
+                        No movement audit records logged yet.
+                      </td>
+                    </tr>
+                  ) : (
+                    movements.map((m) => (
+                      <tr key={m.id} className="hover:bg-slate-50/70 transition">
+                        <td className="p-3.5 font-mono text-[11px] text-slate-600 whitespace-nowrap">
+                          {new Date(m.created_at).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
+                        </td>
+                        <td className="p-3.5">
+                          <div className="font-extrabold text-slate-900 text-xs">{m.product_name}</div>
+                          <div className="text-[10px] font-mono text-slate-400">{m.barcode}</div>
+                        </td>
+                        <td className="p-3.5">
+                          <span
+                            className={`inline-block rounded-md px-2 py-0.5 text-[10px] font-bold border ${
+                              m.movement_type === 'SALE'
+                                ? 'bg-rose-50 text-rose-700 border-rose-200'
+                                : m.movement_type === 'PURCHASE' || m.movement_type === 'SALE_RETURN'
+                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                : 'bg-blue-50 text-blue-700 border-blue-200'
+                            }`}
+                          >
+                            {m.movement_type}
+                          </span>
+                        </td>
+                        <td className="p-3.5 text-right font-black font-mono text-xs">
+                          <span className={Number(m.quantity) >= 0 ? 'text-emerald-700' : 'text-rose-600'}>
+                            {Number(m.quantity) > 0 ? `+${Number(m.quantity)}` : Number(m.quantity)} {m.unit_code}
+                          </span>
+                        </td>
+                        <td className="p-3.5 text-right font-black font-mono text-slate-900 text-xs">
+                          {Number(m.balance_after)} {m.unit_code}
+                        </td>
+                        <td className="p-3.5 text-slate-600 truncate max-w-xs">{m.notes}</td>
+                        <td className="p-3.5 text-slate-700 font-semibold">{m.created_by_name || 'System'}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}
 
       {/* Stock Adjustment Dialog */}
       {isAdjModalOpen && selectedProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-md rounded-xl bg-white p-5 shadow-2xl">
-            <h3 className="font-bold text-slate-900 text-sm mb-1">Stock Adjustment</h3>
-            <p className="text-xs text-slate-500 mb-4">
-              Adjusting physical inventory for: <strong className="text-slate-800">{selectedProduct.name}</strong>
-            </p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl border border-slate-200">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+              <div>
+                <h3 className="font-black text-slate-900 text-sm">Physical Stock Adjustment</h3>
+                <p className="text-xs text-slate-500">
+                  Item: <strong className="text-slate-800">{selectedProduct.name}</strong>
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsAdjModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+              >
+                ✕
+              </button>
+            </div>
 
             {adjError && (
-              <div className="mb-3 flex items-center gap-2 rounded bg-red-50 p-2 text-xs text-red-700">
-                <AlertCircle className="h-4 w-4 shrink-0" />
+              <div className="mb-4 flex items-center gap-2 rounded-xl bg-rose-50 p-3 text-xs text-rose-700 border border-rose-200 font-semibold">
+                <AlertCircle className="h-4 w-4 shrink-0 text-rose-600" />
                 <span>{adjError}</span>
               </div>
             )}
 
-            <form onSubmit={handleSaveAdjustment} className="space-y-3 text-xs">
+            <form onSubmit={handleSaveAdjustment} className="space-y-3.5 text-xs">
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Adjustment Type</label>
+                <label className="block font-bold text-slate-700 mb-1.5">Adjustment Type</label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => setAdjType('ADD')}
-                    className={`flex items-center justify-center gap-1.5 rounded-lg border py-2 font-bold ${
-                      adjType === 'ADD' ? 'border-emerald-600 bg-emerald-50 text-emerald-800' : 'border-slate-300 text-slate-600'
+                    className={`flex items-center justify-center gap-1.5 rounded-xl border py-2.5 font-bold transition ${
+                      adjType === 'ADD' ? 'border-emerald-600 bg-emerald-50 text-emerald-800 ring-2 ring-emerald-500/20 shadow-xs' : 'border-slate-300 text-slate-600 hover:bg-slate-50'
                     }`}
                   >
                     <Plus className="h-4 w-4" />
@@ -572,8 +600,8 @@ export const InventoryPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setAdjType('SUBTRACT')}
-                    className={`flex items-center justify-center gap-1.5 rounded-lg border py-2 font-bold ${
-                      adjType === 'SUBTRACT' ? 'border-rose-600 bg-rose-50 text-rose-800' : 'border-slate-300 text-slate-600'
+                    className={`flex items-center justify-center gap-1.5 rounded-xl border py-2.5 font-bold transition ${
+                      adjType === 'SUBTRACT' ? 'border-rose-600 bg-rose-50 text-rose-800 ring-2 ring-rose-500/20 shadow-xs' : 'border-slate-300 text-slate-600 hover:bg-slate-50'
                     }`}
                   >
                     <Minus className="h-4 w-4" />
@@ -583,7 +611,7 @@ export const InventoryPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Quantity ({selectedProduct.unit_code || 'Units'})</label>
+                <label className="block font-bold text-slate-700 mb-1">Quantity ({selectedProduct.unit_code || 'Units'})</label>
                 <input
                   type="number"
                   step="0.01"
@@ -591,33 +619,33 @@ export const InventoryPage: React.FC = () => {
                   required
                   value={adjQty}
                   onChange={(e) => setAdjQty(parseFloat(e.target.value) || 0)}
-                  className="w-full rounded-lg border border-slate-300 p-2 text-slate-900 font-bold"
+                  className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 font-black font-mono text-sm focus:border-blue-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Reason / Notes</label>
+                <label className="block font-bold text-slate-700 mb-1">Audit Reason / Notes</label>
                 <input
                   type="text"
-                  placeholder="e.g. Expired stock discarded, count correction"
+                  placeholder="e.g. Broken package, stocktaking recount difference"
                   value={adjNotes}
                   onChange={(e) => setAdjNotes(e.target.value)}
-                  className="w-full rounded-lg border border-slate-300 p-2 text-slate-900"
+                  className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 focus:border-blue-500 focus:outline-none"
                 />
               </div>
 
-              <div className="mt-5 flex justify-end gap-2 pt-3 border-t border-slate-200">
+              <div className="mt-6 flex justify-end gap-3 pt-3 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setIsAdjModalOpen(false)}
-                  className="rounded-lg border border-slate-300 px-3 py-1.5 font-semibold text-slate-600 hover:bg-slate-100"
+                  className="rounded-xl border border-slate-300 px-4 py-2 font-bold text-slate-600 hover:bg-slate-100 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="rounded-lg bg-blue-600 px-4 py-1.5 font-bold text-white hover:bg-blue-700 disabled:opacity-50"
+                  className="rounded-xl bg-blue-600 px-5 py-2 font-black text-white hover:bg-blue-700 disabled:opacity-50 transition shadow-md shadow-blue-500/20"
                 >
                   {isSubmitting ? 'Updating...' : 'Commit Adjustment'}
                 </button>

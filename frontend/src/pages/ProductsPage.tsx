@@ -16,6 +16,9 @@ import {
   Printer,
   RefreshCw,
   X,
+  Sparkles,
+  Tag,
+  Check,
 } from 'lucide-react';
 import axiosClient from '../api/axiosClient';
 import { Product, Category, Unit } from '../types';
@@ -115,7 +118,7 @@ export const ProductsPage: React.FC = () => {
     setFormData({
       name: '',
       brand: '',
-      barcode: `890${Date.now().toString().slice(-10)}`, // Auto generate Indian EAN prefix
+      barcode: `890${Date.now().toString().slice(-10)}`,
       sku: `SKU-${Date.now().toString().slice(-6)}`,
       categoryId: categories[0]?.id || 1,
       unitId: units[0]?.id || 1,
@@ -168,14 +171,12 @@ export const ProductsPage: React.FC = () => {
 
     try {
       if (editingProduct) {
-        // Update
         const res = await axiosClient.put(`/products/${editingProduct.id}`, formData);
         if (res.data?.success) {
           setIsModalOpen(false);
           fetchProducts();
         }
       } else {
-        // Create
         const res = await axiosClient.post('/products', formData);
         if (res.data?.success) {
           setIsModalOpen(false);
@@ -263,13 +264,24 @@ export const ProductsPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 antialiased">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-black text-slate-900 tracking-tight">Product Catalog & Master List</h1>
-          <p className="text-xs text-slate-500 mt-0.5">Manage supermarket products, barcodes, GST rates and pricing</p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-200/80 shadow-2xs">
+            <Package className="h-6 w-6" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl font-black text-slate-900 tracking-tight">Product Catalog &amp; Master List</h1>
+              <span className="rounded-full bg-slate-100 text-slate-700 text-xs font-bold px-2.5 py-0.5 border border-slate-200">
+                {totalRecords} items
+              </span>
+            </div>
+            <p className="text-xs text-slate-500 mt-0.5">Manage supermarket products, barcodes, GST slabs and price levels</p>
+          </div>
         </div>
+
         <div className="flex items-center gap-2 flex-wrap">
           <input
             type="file"
@@ -280,7 +292,7 @@ export const ProductsPage: React.FC = () => {
           />
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 transition"
+            className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 shadow-2xs hover:bg-slate-50 transition"
             title="Import products from CSV spreadsheet"
           >
             <Upload className="h-3.5 w-3.5 text-slate-500" />
@@ -288,7 +300,7 @@ export const ProductsPage: React.FC = () => {
           </button>
           <button
             onClick={handleExportCsv}
-            className="flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 transition"
+            className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 shadow-2xs hover:bg-slate-50 transition"
             title="Export full catalog to CSV"
           >
             <Download className="h-3.5 w-3.5 text-slate-500" />
@@ -296,7 +308,7 @@ export const ProductsPage: React.FC = () => {
           </button>
           <button
             onClick={openAddModal}
-            className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-blue-700 transition"
+            className="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-xs font-black text-white shadow-md shadow-blue-500/20 hover:bg-blue-700 active:scale-[0.99] transition"
           >
             <Plus className="h-4 w-4" />
             <span>Add New Product</span>
@@ -305,11 +317,11 @@ export const ProductsPage: React.FC = () => {
       </div>
 
       {/* Filter Bar */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-sm">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {/* Search */}
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+            <Search className="pointer-events-none absolute left-3.5 top-2.5 h-4 w-4 text-slate-400" />
             <input
               type="text"
               value={search}
@@ -318,7 +330,7 @@ export const ProductsPage: React.FC = () => {
                 setPage(1);
               }}
               placeholder="Search by product name, barcode or SKU..."
-              className="w-full rounded-lg border border-slate-300 bg-slate-50 py-2 pl-9 pr-3 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 pl-10 pr-3 text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"
             />
           </div>
 
@@ -329,9 +341,9 @@ export const ProductsPage: React.FC = () => {
               setSelectedCategory(e.target.value);
               setPage(1);
             }}
-            className="rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 focus:bg-white focus:outline-none"
+            className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 focus:bg-white focus:outline-none focus:border-blue-500 transition"
           >
-            <option value="">All Categories</option>
+            <option value="">All Categories ({categories.length})</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -346,106 +358,109 @@ export const ProductsPage: React.FC = () => {
               setStockStatus(e.target.value);
               setPage(1);
             }}
-            className="rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 focus:bg-white focus:outline-none"
+            className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 focus:bg-white focus:outline-none focus:border-blue-500 transition"
           >
             <option value="">All Stock Levels</option>
-            <option value="low">Low Stock (≤ Minimum)</option>
-            <option value="out">Out of Stock (0 Quantity)</option>
+            <option value="low">Low Stock (≤ Minimum Alert)</option>
+            <option value="out">Out of Stock (0 Units)</option>
           </select>
         </div>
       </div>
 
       {/* Products Table */}
-      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="rounded-2xl border border-slate-200/90 bg-white shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 uppercase tracking-wider text-[11px]">
-                <th className="p-3">Product Name</th>
-                <th className="p-3">Barcode / SKU</th>
-                <th className="p-3">Category</th>
-                <th className="p-3 text-center">Unit</th>
-                <th className="p-3 text-right">Cost (₹)</th>
-                <th className="p-3 text-right">Price (₹)</th>
-                <th className="p-3 text-center">GST %</th>
-                <th className="p-3 text-right">Stock</th>
-                <th className="p-3 text-center">Status</th>
-                <th className="p-3 text-center">Actions</th>
+              <tr className="bg-slate-100/80 text-slate-600 font-extrabold border-b border-slate-200 uppercase tracking-wider text-[10px]">
+                <th className="p-3.5">Product Name</th>
+                <th className="p-3.5">Barcode / SKU</th>
+                <th className="p-3.5">Category</th>
+                <th className="p-3.5 text-center">Unit</th>
+                <th className="p-3.5 text-right">Cost (₹)</th>
+                <th className="p-3.5 text-right">Selling Price (₹)</th>
+                <th className="p-3.5 text-center">GST Slab</th>
+                <th className="p-3.5 text-right">Stock Level</th>
+                <th className="p-3.5 text-center">Status</th>
+                <th className="p-3.5 text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan={10} className="p-8 text-center text-slate-400">
-                    Loading products from MySQL...
+                  <td colSpan={10} className="p-10 text-center text-slate-400">
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="h-6 w-6 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+                      <span className="text-xs font-semibold">Loading catalog from database...</span>
+                    </div>
                   </td>
                 </tr>
               ) : products.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className="p-8 text-center text-slate-400">
-                    No products matched your search criteria.
+                  <td colSpan={10} className="p-10 text-center text-slate-400">
+                    No products matched your search or filters.
                   </td>
                 </tr>
               ) : (
                 products.map((p) => (
-                  <tr key={p.id} className="hover:bg-slate-50 transition">
-                    <td className="p-3">
-                      <div className="font-bold text-slate-900 text-sm">{p.name}</div>
-                      <div className="text-[10px] text-slate-400">HSN: {p.hsn_code}</div>
+                  <tr key={p.id} className="hover:bg-slate-50/70 transition">
+                    <td className="p-3.5">
+                      <div className="font-extrabold text-slate-900 text-xs">{p.name}</div>
+                      <div className="text-[10px] text-slate-400 font-mono mt-0.5">HSN: {p.hsn_code}</div>
                     </td>
-                    <td className="p-3 font-mono text-slate-600">
-                      <div>{p.barcode}</div>
+                    <td className="p-3.5 font-mono text-slate-600">
+                      <div className="font-bold text-slate-800 text-[11px]">{p.barcode}</div>
                       <div className="text-[10px] text-slate-400">{p.sku}</div>
                     </td>
-                    <td className="p-3 text-slate-700 font-medium">{p.category_name}</td>
-                    <td className="p-3 text-center">
-                      <span className="rounded bg-slate-100 px-1.5 py-0.5 font-bold text-slate-700">
+                    <td className="p-3.5 text-slate-700 font-semibold">{p.category_name}</td>
+                    <td className="p-3.5 text-center">
+                      <span className="rounded-md bg-slate-100 px-2 py-0.5 font-bold text-slate-700 text-[11px] border border-slate-200/80">
                         {p.unit_code}
                       </span>
                     </td>
-                    <td className="p-3 text-right font-medium text-slate-600">₹{Number(p.purchase_price).toFixed(2)}</td>
-                    <td className="p-3 text-right font-bold text-slate-900">₹{Number(p.selling_price).toFixed(2)}</td>
-                    <td className="p-3 text-center">
-                      <span className="rounded bg-blue-50 px-1.5 py-0.5 text-blue-800 font-bold">
+                    <td className="p-3.5 text-right font-medium text-slate-500 font-mono">₹{Number(p.purchase_price).toFixed(2)}</td>
+                    <td className="p-3.5 text-right font-black text-slate-900 font-mono text-xs">₹{Number(p.selling_price).toFixed(2)}</td>
+                    <td className="p-3.5 text-center">
+                      <span className="rounded-md bg-blue-50 px-2 py-0.5 text-blue-700 font-bold border border-blue-200/80 text-[10px]">
                         {p.gst_rate}%
                       </span>
                     </td>
-                    <td className="p-3 text-right font-bold">
+                    <td className="p-3.5 text-right font-bold font-mono">
                       <span
-                        className={`inline-block rounded px-2 py-0.5 text-xs ${
-                          p.current_stock <= 0
-                            ? 'bg-red-100 text-red-800'
-                            : p.current_stock <= p.min_stock_qty
-                            ? 'bg-amber-100 text-amber-800'
-                            : 'bg-emerald-100 text-emerald-800'
+                        className={`inline-block rounded-md px-2 py-0.5 text-xs font-bold border ${
+                          Number(p.current_stock) <= 0
+                            ? 'bg-rose-50 text-rose-700 border-rose-200'
+                            : Number(p.current_stock) <= Number(p.min_stock_qty)
+                            ? 'bg-amber-50 text-amber-700 border-amber-200'
+                            : 'bg-emerald-50 text-emerald-700 border-emerald-200'
                         }`}
                       >
                         {Number(p.current_stock)} {p.unit_code}
                       </span>
                     </td>
-                    <td className="p-3 text-center">
+                    <td className="p-3.5 text-center">
                       <button
                         onClick={() => handleToggleStatus(p.id, Boolean(p.is_active))}
-                        className={`inline-flex items-center gap-1 text-[11px] font-bold ${
-                          p.is_active ? 'text-emerald-700' : 'text-slate-400'
+                        className={`inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                          p.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-500 border border-slate-200'
                         }`}
                       >
-                        {p.is_active ? <CheckCircle className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
+                        <span className={`h-1.5 w-1.5 rounded-full ${p.is_active ? 'bg-emerald-500' : 'bg-slate-400'}`} />
                         <span>{p.is_active ? 'Active' : 'Inactive'}</span>
                       </button>
                     </td>
-                    <td className="p-3 text-center">
-                      <div className="flex items-center justify-center gap-1">
+                    <td className="p-3.5 text-center">
+                      <div className="flex items-center justify-center gap-1.5">
                         <button
                           onClick={() => setBarcodeLabelProduct(p)}
-                          className="rounded p-1 text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition"
-                          title="Print Barcode Label Sticker"
+                          className="rounded-lg p-1.5 text-slate-500 hover:bg-blue-50 hover:text-blue-600 transition"
+                          title="Print Barcode Labels"
                         >
-                          <Barcode className="h-4 w-4 text-blue-600" />
+                          <Barcode className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => openEditModal(p)}
-                          className="rounded p-1 text-slate-500 hover:bg-blue-50 hover:text-blue-600 transition"
+                          className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition"
                           title="Edit Product"
                         >
                           <Edit2 className="h-4 w-4" />
@@ -460,7 +475,7 @@ export const ProductsPage: React.FC = () => {
         </div>
 
         {/* Pagination Bar */}
-        <div className="flex items-center justify-between border-t border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-600">
+        <div className="flex items-center justify-between border-t border-slate-200 bg-slate-50/80 px-4 py-3 text-xs text-slate-600">
           <div>
             Showing <strong className="text-slate-900">{products.length}</strong> of{' '}
             <strong className="text-slate-900">{totalRecords}</strong> products
@@ -469,17 +484,17 @@ export const ProductsPage: React.FC = () => {
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="rounded border border-slate-300 bg-white px-2.5 py-1 font-semibold hover:bg-slate-50 disabled:opacity-50"
+              className="rounded-lg border border-slate-300 bg-white px-3 py-1 font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40 shadow-2xs"
             >
               Previous
             </button>
-            <span className="font-semibold text-slate-800">
+            <span className="font-bold text-slate-800">
               Page {page} of {totalPages}
             </span>
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page >= totalPages}
-              className="rounded border border-slate-300 bg-white px-2.5 py-1 font-semibold hover:bg-slate-50 disabled:opacity-50"
+              className="rounded-lg border border-slate-300 bg-white px-3 py-1 font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40 shadow-2xs"
             >
               Next
             </button>
@@ -489,15 +504,27 @@ export const ProductsPage: React.FC = () => {
 
       {/* Add / Edit Product Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-2xl rounded-xl bg-white p-6 shadow-2xl overflow-y-auto max-h-[90vh]">
-            <h2 className="text-lg font-bold text-slate-900 mb-4">
-              {editingProduct ? 'Edit Product' : 'Add New Product'}
-            </h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
+          <div className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl border border-slate-200 overflow-y-auto max-h-[90vh]">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+              <h2 className="text-base font-black text-slate-900 flex items-center gap-2">
+                <div className="p-1 rounded-md bg-blue-50 text-blue-600">
+                  <Package className="h-4 w-4" />
+                </div>
+                <span>{editingProduct ? 'Edit Product Details' : 'Add New Product to Catalog'}</span>
+              </h2>
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+              >
+                ✕
+              </button>
+            </div>
 
             {formError && (
-              <div className="mb-4 flex items-center gap-2 rounded-lg bg-red-50 p-3 text-xs text-red-700 border border-red-200">
-                <AlertCircle className="h-4 w-4 shrink-0 text-red-600" />
+              <div className="mb-4 flex items-center gap-2 rounded-xl bg-rose-50 p-3 text-xs text-rose-700 border border-rose-200 font-semibold">
+                <AlertCircle className="h-4 w-4 shrink-0 text-rose-600" />
                 <span>{formError}</span>
               </div>
             )}
@@ -505,20 +532,20 @@ export const ProductsPage: React.FC = () => {
             <form onSubmit={handleSaveProduct} className="space-y-4 text-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="sm:col-span-2">
-                  <label className="block font-semibold text-slate-700 mb-1">Product Name *</label>
+                  <label className="block font-bold text-slate-700 mb-1">Product Name *</label>
                   <input
                     type="text"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="e.g. Amul Butter 500g"
-                    className="w-full rounded-lg border border-slate-300 p-2 text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 font-medium focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
                 </div>
 
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="block font-semibold text-slate-700">Barcode (EAN-13) *</label>
+                    <label className="block font-bold text-slate-700">Barcode (EAN-13) *</label>
                     <button
                       type="button"
                       onClick={() => setFormData((f) => ({ ...f, barcode: `890${Date.now().toString().slice(-10)}` }))}
@@ -534,37 +561,37 @@ export const ProductsPage: React.FC = () => {
                     required
                     value={formData.barcode}
                     onChange={(e) => setFormData({ ...formData, barcode: e.target.value })}
-                    className="w-full rounded-lg border border-slate-300 p-2 font-mono text-slate-900"
+                    className="w-full rounded-xl border border-slate-300 p-2.5 font-mono font-bold text-slate-900 focus:outline-none focus:border-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Brand Name</label>
+                  <label className="block font-bold text-slate-700 mb-1">Brand Name</label>
                   <input
                     type="text"
                     value={formData.brand}
                     onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
                     placeholder="e.g. Amul, Nestle, Britannia"
-                    className="w-full rounded-lg border border-slate-300 p-2 text-slate-900"
+                    className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">SKU Code</label>
+                  <label className="block font-bold text-slate-700 mb-1">SKU Code</label>
                   <input
                     type="text"
                     value={formData.sku}
                     onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
-                    className="w-full rounded-lg border border-slate-300 p-2 font-mono text-slate-900"
+                    className="w-full rounded-xl border border-slate-300 p-2.5 font-mono text-slate-900"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Category *</label>
+                  <label className="block font-bold text-slate-700 mb-1">Category *</label>
                   <select
                     value={formData.categoryId}
                     onChange={(e) => setFormData({ ...formData, categoryId: Number(e.target.value) })}
-                    className="w-full rounded-lg border border-slate-300 p-2 text-slate-900"
+                    className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 font-semibold"
                   >
                     {categories.map((c) => (
                       <option key={c.id} value={c.id}>
@@ -575,11 +602,11 @@ export const ProductsPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Unit of Measurement *</label>
+                  <label className="block font-bold text-slate-700 mb-1">Unit of Measurement *</label>
                   <select
                     value={formData.unitId}
                     onChange={(e) => setFormData({ ...formData, unitId: Number(e.target.value) })}
-                    className="w-full rounded-lg border border-slate-300 p-2 text-slate-900"
+                    className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 font-semibold"
                   >
                     {units.map((u) => (
                       <option key={u.id} value={u.id}>
@@ -590,44 +617,44 @@ export const ProductsPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">HSN Code</label>
+                  <label className="block font-bold text-slate-700 mb-1">HSN Code</label>
                   <input
                     type="text"
                     value={formData.hsnCode}
                     onChange={(e) => setFormData({ ...formData, hsnCode: e.target.value })}
-                    className="w-full rounded-lg border border-slate-300 p-2 font-mono text-slate-900"
+                    className="w-full rounded-xl border border-slate-300 p-2.5 font-mono text-slate-900"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">GST Rate (%)</label>
+                  <label className="block font-bold text-slate-700 mb-1">GST Tax Slab</label>
                   <select
                     value={formData.gstRate}
                     onChange={(e) => setFormData({ ...formData, gstRate: Number(e.target.value) })}
-                    className="w-full rounded-lg border border-slate-300 p-2 font-semibold text-slate-900"
+                    className="w-full rounded-xl border border-slate-300 p-2.5 font-bold text-slate-900"
                   >
-                    <option value={0}>0% (Exempt)</option>
-                    <option value={5}>5%</option>
-                    <option value={12}>12%</option>
-                    <option value={18}>18%</option>
-                    <option value={28}>28%</option>
+                    <option value={0}>0% (Tax Exempt / Fresh Produce)</option>
+                    <option value={5}>5% (Essential FMCG)</option>
+                    <option value={12}>12% (Standard FMCG)</option>
+                    <option value={18}>18% (Packaged Consumer Goods)</option>
+                    <option value={28}>28% (Luxury / Aerated Drinks)</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Purchase Cost (₹)</label>
+                  <label className="block font-bold text-slate-700 mb-1">Purchase Cost (₹)</label>
                   <input
                     type="number"
                     step="0.01"
                     min="0"
                     value={formData.purchasePrice}
                     onChange={(e) => setFormData({ ...formData, purchasePrice: parseFloat(e.target.value) || 0 })}
-                    className="w-full rounded-lg border border-slate-300 p-2 text-slate-900"
+                    className="w-full rounded-xl border border-slate-300 p-2.5 font-mono text-slate-900"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Selling Price (₹) *</label>
+                  <label className="block font-bold text-slate-700 mb-1">Selling Price (₹) *</label>
                   <input
                     type="number"
                     step="0.01"
@@ -635,24 +662,24 @@ export const ProductsPage: React.FC = () => {
                     required
                     value={formData.sellingPrice}
                     onChange={(e) => setFormData({ ...formData, sellingPrice: parseFloat(e.target.value) || 0 })}
-                    className="w-full rounded-lg border border-slate-300 p-2 font-bold text-slate-900"
+                    className="w-full rounded-xl border border-slate-300 p-2.5 font-black text-slate-900 font-mono text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">MRP (₹)</label>
+                  <label className="block font-bold text-slate-700 mb-1">MRP (₹)</label>
                   <input
                     type="number"
                     step="0.01"
                     min="0"
                     value={formData.mrp}
                     onChange={(e) => setFormData({ ...formData, mrp: parseFloat(e.target.value) || 0 })}
-                    className="w-full rounded-lg border border-slate-300 p-2 text-slate-900"
+                    className="w-full rounded-xl border border-slate-300 p-2.5 font-mono text-slate-900"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Opening Stock</label>
+                  <label className="block font-bold text-slate-700 mb-1">Opening Stock</label>
                   <input
                     type="number"
                     step="0.1"
@@ -660,48 +687,48 @@ export const ProductsPage: React.FC = () => {
                     disabled={!!editingProduct}
                     value={formData.openingStock}
                     onChange={(e) => setFormData({ ...formData, openingStock: parseFloat(e.target.value) || 0 })}
-                    className="w-full rounded-lg border border-slate-300 p-2 text-slate-900 disabled:bg-slate-100"
+                    className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 disabled:bg-slate-100 font-bold font-mono"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Minimum Stock Alert</label>
+                  <label className="block font-bold text-slate-700 mb-1">Minimum Stock Alert</label>
                   <input
                     type="number"
                     step="0.1"
                     min="0"
                     value={formData.minStockQty}
                     onChange={(e) => setFormData({ ...formData, minStockQty: parseFloat(e.target.value) || 0 })}
-                    className="w-full rounded-lg border border-slate-300 p-2 text-slate-900"
+                    className="w-full rounded-xl border border-slate-300 p-2.5 font-bold font-mono text-slate-900"
                   />
                 </div>
 
-                <div className="flex items-center gap-2 pt-4">
+                <div className="flex items-center gap-2 pt-3 sm:col-span-2">
                   <input
                     type="checkbox"
                     id="taxInclusive"
                     checked={formData.isTaxInclusive}
                     onChange={(e) => setFormData({ ...formData, isTaxInclusive: e.target.checked })}
-                    className="h-4 w-4 rounded text-blue-600"
+                    className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <label htmlFor="taxInclusive" className="font-semibold text-slate-700">
+                  <label htmlFor="taxInclusive" className="font-bold text-slate-700">
                     Selling Price is Tax-Inclusive (GST Included)
                   </label>
                 </div>
               </div>
 
-              <div className="mt-6 flex justify-end gap-3 border-t border-slate-200 pt-4">
+              <div className="mt-6 flex justify-end gap-3 border-t border-slate-100 pt-4">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="rounded-lg border border-slate-300 px-4 py-2 font-semibold text-slate-600 hover:bg-slate-100"
+                  className="rounded-xl border border-slate-300 px-4 py-2 font-bold text-slate-600 hover:bg-slate-100 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="rounded-lg bg-blue-600 px-5 py-2 font-bold text-white hover:bg-blue-700 disabled:opacity-50"
+                  className="rounded-xl bg-blue-600 px-5 py-2 font-black text-white hover:bg-blue-700 disabled:opacity-50 transition shadow-md shadow-blue-500/20"
                 >
                   {isSaving ? 'Saving...' : editingProduct ? 'Update Product' : 'Create Product'}
                 </button>
@@ -713,28 +740,30 @@ export const ProductsPage: React.FC = () => {
 
       {/* Barcode Sticker Label Print Modal */}
       {barcodeLabelProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 print:p-0 print:bg-white">
-          <div className="w-full max-w-xl rounded-xl bg-white p-5 shadow-2xl print:shadow-none print:max-w-none print:p-0">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 print:p-0 print:bg-white">
+          <div className="w-full max-w-xl rounded-2xl bg-white p-5 shadow-2xl border border-slate-200 print:border-none print:shadow-none print:max-w-none print:p-0">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4 print:hidden">
               <div className="flex items-center gap-2">
-                <Barcode className="h-5 w-5 text-blue-600" />
-                <h3 className="font-bold text-slate-800 text-sm">Print Barcode Price Labels</h3>
+                <div className="p-1 rounded-md bg-blue-50 text-blue-600">
+                  <Barcode className="h-4 w-4" />
+                </div>
+                <h3 className="font-black text-slate-900 text-sm">Print Barcode Price Stickers</h3>
               </div>
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-1.5 text-xs text-slate-600">
-                  <span>Copies:</span>
+                  <span className="font-bold">Copies:</span>
                   <input
                     type="number"
                     min="1"
                     max="60"
                     value={labelCopies}
                     onChange={(e) => setLabelCopies(parseInt(e.target.value, 10) || 1)}
-                    className="w-14 rounded border border-slate-300 p-1 text-center font-bold"
+                    className="w-14 rounded-lg border border-slate-300 p-1 text-center font-bold font-mono"
                   />
                 </div>
                 <button
                   onClick={() => window.print()}
-                  className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-blue-700 shadow-sm"
+                  className="flex items-center gap-1.5 rounded-xl bg-blue-600 px-3.5 py-1.5 text-xs font-black text-white hover:bg-blue-700 shadow-xs transition"
                 >
                   <Printer className="h-3.5 w-3.5" />
                   <span>Print Labels</span>
@@ -749,11 +778,11 @@ export const ProductsPage: React.FC = () => {
             </div>
 
             {/* Labels Grid Preview */}
-            <div className="grid grid-cols-2 gap-3 max-h-[70vh] overflow-y-auto p-2 border border-slate-100 bg-slate-50 rounded-lg print:border-none print:bg-white print:grid-cols-3 print:gap-4 print:max-h-none">
+            <div className="grid grid-cols-2 gap-3 max-h-[70vh] overflow-y-auto p-2 border border-slate-100 bg-slate-50/70 rounded-xl print:border-none print:bg-white print:grid-cols-3 print:gap-4 print:max-h-none">
               {Array.from({ length: labelCopies }).map((_, idx) => (
                 <div
                   key={idx}
-                  className="border border-slate-300 bg-white p-3 rounded shadow-xs flex flex-col items-center justify-center text-center text-slate-900 print:border-slate-800"
+                  className="border border-slate-300 bg-white p-3 rounded-xl shadow-2xs flex flex-col items-center justify-center text-center text-slate-900 print:border-slate-800"
                 >
                   <div className="text-[10px] font-black uppercase tracking-wider text-slate-500">SuperMart Hypermarket</div>
                   <div className="text-xs font-bold text-slate-900 truncate max-w-[190px] mt-0.5">{barcodeLabelProduct.name}</div>
@@ -770,7 +799,7 @@ export const ProductsPage: React.FC = () => {
                   <div className="font-mono text-[10px] tracking-widest font-bold text-slate-800">{barcodeLabelProduct.barcode}</div>
                   <div className="mt-1 flex items-center justify-between w-full px-2 text-[11px] font-bold">
                     <span className="text-slate-400 line-through">MRP: ₹{Number(barcodeLabelProduct.mrp || barcodeLabelProduct.selling_price).toFixed(2)}</span>
-                    <span className="text-blue-900 text-xs">Our Price: ₹{Number(barcodeLabelProduct.selling_price).toFixed(2)}</span>
+                    <span className="text-blue-900 text-xs font-black font-mono">₹{Number(barcodeLabelProduct.selling_price).toFixed(2)}</span>
                   </div>
                 </div>
               ))}

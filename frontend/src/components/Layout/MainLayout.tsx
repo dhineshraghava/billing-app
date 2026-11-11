@@ -22,6 +22,11 @@ import {
   Clock,
   Sparkles,
   ChevronRight,
+  ChevronLeft,
+  Star,
+  ShieldCheck,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import axiosClient from '../../api/axiosClient';
@@ -44,7 +49,18 @@ export const MainLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(() => {
+    return localStorage.getItem('supermart_sidebar_collapsed') === 'true';
+  });
   const [storeName, setStoreName] = useState<string>('SuperMart Hypermarket');
+
+  const toggleSidebarCollapse = () => {
+    setSidebarCollapsed((prev) => {
+      const next = !prev;
+      localStorage.setItem('supermart_sidebar_collapsed', String(next));
+      return next;
+    });
+  };
 
   // Live Clock
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
@@ -183,7 +199,7 @@ export const MainLayout: React.FC = () => {
     {
       title: 'FINANCE & KHATA',
       items: [
-        { label: 'Customer Khata', path: '/customers', icon: Users, roles: ['ADMIN', 'MANAGER'] },
+        { label: 'Customers & Loyalty', path: '/customers', icon: Users, roles: ['ADMIN', 'MANAGER'] },
         { label: 'Operating Expenses', path: '/expenses', icon: Wallet, roles: ['ADMIN', 'MANAGER', 'ACCOUNTANT'] },
       ]
     },
@@ -213,31 +229,49 @@ export const MainLayout: React.FC = () => {
         />
       )}
 
-      {/* Modern Sidebar */}
+      {/* Modern Collapsible Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-[#0b172a] text-slate-100 transition-transform duration-200 lg:static lg:translate-x-0 border-r border-slate-800 ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`fixed inset-y-0 left-0 z-50 flex flex-col bg-[#090e1a] text-slate-100 transition-all duration-300 ease-in-out lg:static border-r border-slate-800/80 shadow-xl ${
+          sidebarCollapsed ? 'lg:w-[76px]' : 'lg:w-64'
+        } ${sidebarOpen ? 'w-64 translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
       >
         {/* Brand Header */}
-        <div className="flex h-16 items-center justify-between border-b border-slate-800/80 px-4">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 text-white shadow-md shadow-blue-500/20 font-black text-lg">
+        <div className="flex h-16 items-center justify-between border-b border-slate-800/80 px-3.5">
+          <div className="flex items-center gap-2.5 overflow-hidden">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 text-white shadow-lg shadow-blue-500/25 font-black text-lg border border-blue-400/30">
               SM
             </div>
-            <div>
-              <div className="font-extrabold text-sm tracking-tight text-white leading-tight">
-                {storeName}
+            {!sidebarCollapsed && (
+              <div className="overflow-hidden animate-in fade-in duration-200">
+                <div className="font-extrabold text-sm tracking-tight text-white leading-tight truncate">
+                  {storeName}
+                </div>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-[10px] text-blue-300 font-bold tracking-wider uppercase">Hypermarket POS</span>
+                </div>
               </div>
-              <div className="text-[10px] text-blue-400 font-medium tracking-wider uppercase">Hypermarket POS</div>
-            </div>
+            )}
           </div>
+
+          {/* Mobile Close Button */}
           <button
             onClick={() => setSidebarOpen(false)}
             className="rounded p-1 text-slate-400 hover:text-white lg:hidden"
           >
             <X className="h-5 w-5" />
           </button>
+
+          {/* Desktop Collapse Toggle */}
+          {!sidebarCollapsed && (
+            <button
+              onClick={toggleSidebarCollapse}
+              className="hidden lg:flex p-1.5 text-slate-400 hover:text-white hover:bg-slate-800/70 rounded-lg transition"
+              title="Collapse sidebar"
+            >
+              <PanelLeftClose className="h-4 w-4" />
+            </button>
+          )}
         </div>
 
         {/* Quick Launch POS / Inventory Button */}
@@ -248,10 +282,15 @@ export const MainLayout: React.FC = () => {
                 navigate('/pos');
                 setSidebarOpen(false);
               }}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-4 py-2.5 font-bold text-white shadow-md shadow-emerald-900/30 transition hover:from-emerald-500 hover:to-teal-500 active:scale-[0.98]"
+              title="Open POS Billing Counter (F9)"
+              className={`flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 font-bold text-white shadow-md shadow-emerald-950/40 transition hover:from-emerald-500 hover:to-teal-500 active:scale-[0.98] ${
+                sidebarCollapsed ? 'py-2.5 px-0' : 'px-4 py-2.5'
+              }`}
             >
-              <ShoppingCart className="h-4 w-4" />
-              <span className="text-xs uppercase tracking-wider font-extrabold">Open POS Counter</span>
+              <ShoppingCart className="h-4 w-4 shrink-0" />
+              {!sidebarCollapsed && (
+                <span className="text-xs uppercase tracking-wider font-extrabold truncate">Open POS Counter</span>
+              )}
             </button>
           ) : (
             <button
@@ -259,25 +298,34 @@ export const MainLayout: React.FC = () => {
                 navigate('/inventory');
                 setSidebarOpen(false);
               }}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2.5 font-bold text-white shadow-md shadow-blue-900/30 transition hover:from-blue-500 hover:to-indigo-500 active:scale-[0.98]"
+              title="Stock Inventory & Reorders"
+              className={`flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 font-bold text-white shadow-md shadow-blue-950/40 transition hover:from-blue-500 hover:to-indigo-500 active:scale-[0.98] ${
+                sidebarCollapsed ? 'py-2.5 px-0' : 'px-4 py-2.5'
+              }`}
             >
-              <Layers className="h-4 w-4" />
-              <span className="text-xs uppercase tracking-wider font-extrabold">Stock Inventory</span>
+              <Layers className="h-4 w-4 shrink-0" />
+              {!sidebarCollapsed && (
+                <span className="text-xs uppercase tracking-wider font-extrabold truncate">Stock Inventory</span>
+              )}
             </button>
           )}
         </div>
 
         {/* Grouped Navigation Links */}
-        <nav className="flex-1 space-y-4 overflow-y-auto px-3 py-2 text-xs font-medium">
+        <nav className="flex-1 space-y-4 overflow-y-auto px-2.5 py-2 text-xs font-medium custom-scrollbar">
           {navSections.map((sec) => {
             const visibleItems = sec.items.filter((item) => !item.roles || hasRole(item.roles));
             if (visibleItems.length === 0) return null;
 
             return (
               <div key={sec.title} className="space-y-1">
-                <div className="px-2.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                  {sec.title}
-                </div>
+                {!sidebarCollapsed ? (
+                  <div className="px-2.5 text-[9px] font-extrabold uppercase tracking-widest text-slate-400/90 py-1">
+                    {sec.title}
+                  </div>
+                ) : (
+                  <div className="my-2 border-t border-slate-800/80 mx-2" />
+                )}
                 {visibleItems.map((item) => {
                   const Icon = item.icon;
                   const isPos = item.path === '/pos';
@@ -288,24 +336,36 @@ export const MainLayout: React.FC = () => {
                       to={item.path}
                       end={item.path === '/'}
                       onClick={() => setSidebarOpen(false)}
+                      title={sidebarCollapsed ? item.label : undefined}
                       className={({ isActive }) =>
-                        `flex items-center justify-between rounded-lg px-2.5 py-2 transition-all ${
+                        `group flex items-center ${
+                          sidebarCollapsed ? 'justify-center px-0' : 'justify-between px-3'
+                        } rounded-xl py-2.5 transition-all duration-150 relative ${
                           isActive
-                            ? 'bg-blue-600 font-bold text-white shadow-md shadow-blue-900/30'
+                            ? 'bg-gradient-to-r from-blue-600 to-indigo-600 font-bold text-white shadow-lg shadow-blue-600/25'
                             : isPos
-                            ? 'text-emerald-400 hover:bg-slate-800/80 hover:text-emerald-300'
+                            ? 'text-emerald-400 hover:bg-slate-800/60 hover:text-emerald-300'
                             : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
                         }`
                       }
                     >
-                      <div className="flex items-center gap-2.5">
-                        <Icon className={`h-4 w-4 ${isPos ? 'text-emerald-400' : ''}`} />
-                        <span>{item.label}</span>
-                      </div>
-                      {isPos && (
-                        <span className="rounded bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 text-[9px] font-bold">
-                          F9
-                        </span>
+                      {({ isActive }) => (
+                        <>
+                          {isActive && (
+                            <span className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-white rounded-r-full shadow-xs" />
+                          )}
+                          <div className={`flex items-center gap-3 ${sidebarCollapsed ? 'justify-center' : ''}`}>
+                            <Icon className={`h-4 w-4 shrink-0 transition-transform group-hover:scale-110 ${
+                              isActive ? 'text-white' : isPos ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'
+                            }`} />
+                            {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
+                          </div>
+                          {!sidebarCollapsed && isPos && (
+                            <span className="rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.5 text-[9px] font-mono font-bold">
+                              F9
+                            </span>
+                          )}
+                        </>
                       )}
                     </NavLink>
                   );
@@ -316,38 +376,53 @@ export const MainLayout: React.FC = () => {
         </nav>
 
         {/* User Card & Logout */}
-        <div className="border-t border-slate-800/80 p-3 bg-[#08101e]">
-          <div className="flex items-center justify-between">
+        <div className="border-t border-slate-800/80 p-3 bg-[#060a14]">
+          <div className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
             <div className="flex items-center gap-2.5 overflow-hidden">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-800 text-blue-400 font-bold text-xs uppercase border border-slate-700">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-slate-700 to-slate-800 text-blue-400 font-extrabold text-xs uppercase border border-slate-700/80 shadow-xs">
                 {(user?.fullName || user?.username || 'U')[0]}
               </div>
-              <div className="overflow-hidden">
-                <div className="truncate text-xs font-bold text-white leading-tight">
-                  {user?.fullName || user?.username}
+              {!sidebarCollapsed && (
+                <div className="overflow-hidden animate-in fade-in duration-200">
+                  <div className="truncate text-xs font-bold text-white leading-tight">
+                    {user?.fullName || user?.username}
+                  </div>
+                  <span
+                    className={`inline-block rounded border px-1.5 py-0.2 text-[9px] font-bold uppercase tracking-wider mt-0.5 ${roleBadgeColor}`}
+                  >
+                    {user?.roleName?.replace('_', ' ')}
+                  </span>
                 </div>
-                <span
-                  className={`inline-block rounded border px-1.5 py-0.2 text-[9px] font-bold uppercase tracking-wider mt-0.5 ${roleBadgeColor}`}
-                >
-                  {user?.roleName?.replace('_', ' ')}
-                </span>
-              </div>
+              )}
             </div>
-            <button
-              onClick={logout}
-              title="Sign Out"
-              className="rounded-lg p-2 text-slate-400 hover:bg-red-500/20 hover:text-red-400 transition"
-            >
-              <LogOut className="h-4 w-4" />
-            </button>
+            {!sidebarCollapsed && (
+              <button
+                onClick={logout}
+                title="Sign Out of Counter"
+                className="rounded-lg p-2 text-slate-400 hover:bg-rose-500/20 hover:text-rose-400 transition"
+              >
+                <LogOut className="h-4 w-4" />
+              </button>
+            )}
           </div>
+          {sidebarCollapsed && (
+            <div className="mt-2 flex justify-center">
+              <button
+                onClick={logout}
+                title="Sign Out"
+                className="rounded-lg p-1.5 text-slate-400 hover:bg-rose-500/20 hover:text-rose-400 transition"
+              >
+                <LogOut className="h-4 w-4" />
+              </button>
+            </div>
+          )}
         </div>
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="flex flex-1 flex-col overflow-hidden bg-slate-50/70">
         {/* Top Header */}
-        <header className="flex h-16 items-center justify-between border-b border-slate-200/80 bg-white px-4 shadow-sm lg:px-6">
+        <header className="flex h-16 items-center justify-between border-b border-slate-200/80 bg-white/90 backdrop-blur-md px-4 shadow-xs lg:px-6 z-20">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -356,12 +431,23 @@ export const MainLayout: React.FC = () => {
               <Menu className="h-6 w-6" />
             </button>
 
-            {/* Current Active Page Title & Path */}
+            {/* Desktop Expand Button if collapsed */}
+            {sidebarCollapsed && (
+              <button
+                onClick={toggleSidebarCollapse}
+                className="hidden lg:flex p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                title="Expand sidebar"
+              >
+                <PanelLeftOpen className="h-5 w-5" />
+              </button>
+            )}
+
+            {/* Current Active Page Breadcrumb */}
             <div className="hidden sm:flex items-center gap-2 text-xs font-semibold text-slate-500">
-              <span className="font-bold text-slate-800">{storeName}</span>
+              <span className="font-bold text-slate-800 hover:text-blue-600 cursor-pointer" onClick={() => navigate('/')}>{storeName}</span>
               <ChevronRight className="h-3.5 w-3.5 text-slate-400" />
-              <span className="capitalize text-blue-600 font-bold">
-                {location.pathname === '/' ? 'Dashboard' : location.pathname.replace('/', '')}
+              <span className="capitalize text-blue-600 font-bold bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md">
+                {location.pathname === '/' ? 'Business Dashboard' : location.pathname.replace('/', '').replace('-', ' ')}
               </span>
             </div>
           </div>

@@ -235,6 +235,13 @@ export interface DashboardSummary {
     totalAmount: number;
     billCount: number;
   };
+  lifetimeSales?: {
+    totalAmount: number;
+    orderCount: number;
+  };
+  customers?: {
+    total: number;
+  };
   products: {
     total: number;
     lowStock: number;

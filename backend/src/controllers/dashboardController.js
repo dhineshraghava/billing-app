@@ -24,6 +24,20 @@ export async function getDashboardSummary(req, res, next) {
         AND status = 'COMPLETED'
     `);
 
+    // 2b. Lifetime Sales & Total Orders
+    const [lifetimeSales] = await query(`
+      SELECT 
+        COALESCE(SUM(grand_total), 0) AS total_amount,
+        COUNT(id) AS total_orders
+      FROM sales_invoices
+      WHERE status = 'COMPLETED'
+    `);
+
+    // 2c. Total Registered Customers
+    const [customerStats] = await query(`
+      SELECT COUNT(id) AS total_customers FROM customers WHERE is_active = 1
+    `);
+
     // 3. Products summary (total, low stock, out of stock)
     const [productStats] = await query(`
       SELECT 
@@ -93,6 +107,13 @@ export async function getDashboardSummary(req, res, next) {
         monthSales: {
           totalAmount: Number(monthSales?.total_amount || 0),
           billCount: Number(monthSales?.bill_count || 0),
+        },
+        lifetimeSales: {
+          totalAmount: Number(lifetimeSales?.total_amount || 0),
+          orderCount: Number(lifetimeSales?.total_orders || 0),
+        },
+        customers: {
+          total: Number(customerStats?.total_customers || 0),
         },
         products: {
           total: Number(productStats?.total_products || 0),

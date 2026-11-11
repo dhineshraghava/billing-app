@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Truck, Plus, Trash2, Search, AlertCircle, Building2 } from 'lucide-react';
+import { Truck, Plus, Trash2, Search, AlertCircle, Building2, Package, CheckCircle2, DollarSign } from 'lucide-react';
 import axiosClient from '../api/axiosClient';
 import { Supplier, Product } from '../types';
 
@@ -52,7 +52,7 @@ export const PurchasesPage: React.FC = () => {
 
   async function fetchProducts() {
     try {
-      const res = await axiosClient.get('/products', { params: { limit: 100 } });
+      const res = await axiosClient.get('/products?limit=100');
       if (res.data?.success) setProducts(res.data.data);
     } catch (err) {
       console.error('Fetch products error:', err);
@@ -60,15 +60,14 @@ export const PurchasesPage: React.FC = () => {
   }
 
   function addItemLine() {
-    if (products.length === 0) return;
-    const firstProd = products[0];
+    const defaultProduct = products[0];
     setPurchaseItems([
       ...purchaseItems,
       {
-        productId: firstProd.id,
+        productId: defaultProduct ? defaultProduct.id : 1,
         quantity: 10,
-        unitPrice: Number(firstProd.purchase_price) || 50,
-        gstRate: Number(firstProd.gst_rate) || 5,
+        unitPrice: defaultProduct ? Number(defaultProduct.purchase_price) : 50,
+        gstRate: defaultProduct ? Number(defaultProduct.gst_rate) : 5,
       },
     ]);
   }
@@ -76,7 +75,7 @@ export const PurchasesPage: React.FC = () => {
   function updateItemLine(index: number, field: string, value: any) {
     const updated = [...purchaseItems];
     updated[index] = { ...updated[index], [field]: value };
-    // If product changed, update default unitPrice & gstRate
+
     if (field === 'productId') {
       const prod = products.find((p) => p.id === Number(value));
       if (prod) {
@@ -129,12 +128,24 @@ export const PurchasesPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-5">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-black text-slate-900 tracking-tight">Supplier Purchases & Receiving</h1>
-          <p className="text-xs text-slate-500 mt-0.5">Record wholesale goods received and update warehouse inventory</p>
+    <div className="space-y-5 antialiased">
+      {/* Top Header Card */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-200/80 shadow-2xs">
+            <Truck className="h-6 w-6" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl font-black text-slate-900 tracking-tight">Supplier Purchases &amp; Inward Invoices</h1>
+              <span className="rounded-full bg-slate-100 text-slate-700 text-xs font-bold px-2.5 py-0.5 border border-slate-200">
+                {purchases.length} orders
+              </span>
+            </div>
+            <p className="text-xs text-slate-500 mt-0.5">Record wholesale goods received and automatically replenish warehouse stock</p>
+          </div>
         </div>
+
         <button
           onClick={() => {
             setPurchaseItems([]);
@@ -143,53 +154,60 @@ export const PurchasesPage: React.FC = () => {
             setErrorMsg(null);
             setIsModalOpen(true);
           }}
-          className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-blue-700 transition"
+          className="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-xs font-black text-white shadow-md shadow-blue-500/20 hover:bg-blue-700 active:scale-[0.99] transition"
         >
           <Plus className="h-4 w-4" />
-          <span>Record New Purchase</span>
+          <span>Record Inward Purchase</span>
         </button>
       </div>
 
       {/* Purchases Table */}
-      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="rounded-2xl border border-slate-200/90 bg-white shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 uppercase tracking-wider text-[11px]">
-                <th className="p-3">Purchase #</th>
-                <th className="p-3">Supplier Invoice #</th>
-                <th className="p-3">Date</th>
-                <th className="p-3">Supplier Name</th>
-                <th className="p-3 text-right">Total Amount (₹)</th>
-                <th className="p-3 text-right">Amount Paid (₹)</th>
-                <th className="p-3 text-center">Status</th>
-                <th className="p-3">Received By</th>
+              <tr className="bg-slate-100/80 text-slate-600 font-extrabold border-b border-slate-200 uppercase tracking-wider text-[10px]">
+                <th className="p-3.5">Purchase #</th>
+                <th className="p-3.5">Supplier Invoice #</th>
+                <th className="p-3.5">Date</th>
+                <th className="p-3.5">Supplier Name</th>
+                <th className="p-3.5 text-right">Total Amount (₹)</th>
+                <th className="p-3.5 text-right">Amount Paid (₹)</th>
+                <th className="p-3.5 text-center">Status</th>
+                <th className="p-3.5">Received By</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="p-8 text-center text-slate-400">Loading purchases...</td>
+                  <td colSpan={8} className="p-10 text-center text-slate-400">
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="h-6 w-6 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+                      <span className="text-xs font-semibold">Loading purchase orders...</span>
+                    </div>
+                  </td>
                 </tr>
               ) : purchases.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="p-8 text-center text-slate-400">No purchases recorded yet.</td>
+                  <td colSpan={8} className="p-10 text-center text-slate-400">
+                    No supplier purchases recorded yet.
+                  </td>
                 </tr>
               ) : (
                 purchases.map((p) => (
-                  <tr key={p.id} className="hover:bg-slate-50 transition">
-                    <td className="p-3 font-mono font-bold text-blue-700">{p.invoice_number}</td>
-                    <td className="p-3 font-mono text-slate-600">{p.supplier_invoice_number || '-'}</td>
-                    <td className="p-3 text-slate-600">{new Date(p.invoice_date).toLocaleDateString()}</td>
-                    <td className="p-3 font-bold text-slate-900">{p.supplier_name}</td>
-                    <td className="p-3 text-right font-mono font-bold text-slate-900 text-sm">₹{Number(p.grand_total).toFixed(2)}</td>
-                    <td className="p-3 text-right font-mono text-emerald-700 font-semibold">₹{Number(p.amount_paid).toFixed(2)}</td>
-                    <td className="p-3 text-center">
-                      <span className="rounded bg-emerald-100 text-emerald-800 px-2 py-0.5 text-[10px] font-bold">
+                  <tr key={p.id} className="hover:bg-slate-50/70 transition">
+                    <td className="p-3.5 font-mono font-bold text-blue-700 text-xs">{p.invoice_number}</td>
+                    <td className="p-3.5 font-mono text-slate-600 font-medium">{p.supplier_invoice_number || '-'}</td>
+                    <td className="p-3.5 font-mono text-slate-600 text-[11px]">{new Date(p.invoice_date).toLocaleDateString()}</td>
+                    <td className="p-3.5 font-extrabold text-slate-900 text-xs">{p.supplier_name}</td>
+                    <td className="p-3.5 text-right font-mono font-black text-slate-900 text-xs">₹{Number(p.grand_total).toFixed(2)}</td>
+                    <td className="p-3.5 text-right font-mono text-emerald-700 font-bold">₹{Number(p.amount_paid).toFixed(2)}</td>
+                    <td className="p-3.5 text-center">
+                      <span className="rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold">
                         {p.payment_status}
                       </span>
                     </td>
-                    <td className="p-3 text-slate-600">{p.received_by_name}</td>
+                    <td className="p-3.5 text-slate-600 font-medium">{p.received_by_name}</td>
                   </tr>
                 ))
               )}
@@ -200,13 +218,27 @@ export const PurchasesPage: React.FC = () => {
 
       {/* Record Purchase Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-3xl rounded-xl bg-white p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <h2 className="text-base font-bold text-slate-900 mb-3">Record Supplier Purchase Invoice</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
+          <div className="w-full max-w-3xl rounded-2xl bg-white p-6 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+              <h2 className="text-base font-black text-slate-900 flex items-center gap-2">
+                <div className="p-1 rounded-md bg-blue-50 text-blue-600">
+                  <Truck className="h-4 w-4" />
+                </div>
+                <span>Record Inward Supplier Purchase Invoice</span>
+              </h2>
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+              >
+                ✕
+              </button>
+            </div>
 
             {errorMsg && (
-              <div className="mb-4 flex items-center gap-2 rounded bg-red-50 p-2.5 text-xs text-red-700">
-                <AlertCircle className="h-4 w-4 shrink-0" />
+              <div className="mb-4 flex items-center gap-2 rounded-xl bg-rose-50 p-3 text-xs text-rose-700 border border-rose-200 font-semibold">
+                <AlertCircle className="h-4 w-4 shrink-0 text-rose-600" />
                 <span>{errorMsg}</span>
               </div>
             )}
@@ -214,11 +246,11 @@ export const PurchasesPage: React.FC = () => {
             <form onSubmit={handleSavePurchase} className="space-y-4 text-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Select Supplier *</label>
+                  <label className="block font-bold text-slate-700 mb-1">Select Supplier *</label>
                   <select
                     value={selectedSupplierId}
                     onChange={(e) => setSelectedSupplierId(Number(e.target.value))}
-                    className="w-full rounded border border-slate-300 p-2 font-bold text-slate-900"
+                    className="w-full rounded-xl border border-slate-300 p-2.5 font-bold text-slate-900 focus:border-blue-500 focus:outline-none"
                   >
                     {suppliers.map((s) => (
                       <option key={s.id} value={s.id}>
@@ -229,25 +261,25 @@ export const PurchasesPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Supplier Invoice Number</label>
+                  <label className="block font-bold text-slate-700 mb-1">Supplier Invoice Number</label>
                   <input
                     type="text"
                     value={supplierInvoiceNo}
                     onChange={(e) => setSupplierInvoiceNo(e.target.value)}
                     placeholder="e.g. WH-INV-9921"
-                    className="w-full rounded border border-slate-300 p-2 text-slate-900 font-mono"
+                    className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 font-mono font-bold focus:border-blue-500 focus:outline-none"
                   />
                 </div>
               </div>
 
               {/* Purchase Items List */}
-              <div className="border border-slate-200 rounded-lg p-3 bg-slate-50 space-y-2">
-                <div className="flex items-center justify-between pb-1 border-b border-slate-200 font-bold text-slate-700">
-                  <span>Items Received</span>
+              <div className="border border-slate-200 rounded-xl p-3.5 bg-slate-50/70 space-y-2.5">
+                <div className="flex items-center justify-between pb-1.5 border-b border-slate-200 font-black text-slate-700">
+                  <span>Items Received &amp; Cost</span>
                   <button
                     type="button"
                     onClick={addItemLine}
-                    className="flex items-center gap-1 rounded bg-blue-600 px-2.5 py-1 text-white text-[11px] font-bold"
+                    className="flex items-center gap-1 rounded-lg bg-blue-600 px-3 py-1 text-white text-[11px] font-bold hover:bg-blue-700 transition shadow-2xs"
                   >
                     <Plus className="h-3 w-3" />
                     <span>Add Item</span>
@@ -255,16 +287,16 @@ export const PurchasesPage: React.FC = () => {
                 </div>
 
                 {purchaseItems.map((item, idx) => (
-                  <div key={idx} className="grid grid-cols-12 gap-2 items-center bg-white p-2 rounded border border-slate-200">
+                  <div key={idx} className="grid grid-cols-12 gap-2 items-center bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs">
                     <div className="col-span-5">
                       <select
                         value={item.productId}
                         onChange={(e) => updateItemLine(idx, 'productId', e.target.value)}
-                        className="w-full rounded border border-slate-300 p-1 font-semibold text-slate-900"
+                        className="w-full rounded-lg border border-slate-300 p-1.5 font-bold text-slate-900 text-xs"
                       >
                         {products.map((p) => (
                           <option key={p.id} value={p.id}>
-                            {p.name} (Barcode: {p.barcode})
+                            {p.name} ({p.barcode})
                           </option>
                         ))}
                       </select>
@@ -278,7 +310,7 @@ export const PurchasesPage: React.FC = () => {
                         placeholder="Qty"
                         value={item.quantity}
                         onChange={(e) => updateItemLine(idx, 'quantity', parseFloat(e.target.value) || 0)}
-                        className="w-full rounded border border-slate-300 p-1 text-center font-bold"
+                        className="w-full rounded-lg border border-slate-300 p-1.5 text-center font-black font-mono"
                       />
                     </div>
 
@@ -289,11 +321,11 @@ export const PurchasesPage: React.FC = () => {
                         placeholder="Cost"
                         value={item.unitPrice}
                         onChange={(e) => updateItemLine(idx, 'unitPrice', parseFloat(e.target.value) || 0)}
-                        className="w-full rounded border border-slate-300 p-1 text-right font-medium"
+                        className="w-full rounded-lg border border-slate-300 p-1.5 text-right font-black font-mono"
                       />
                     </div>
 
-                    <div className="col-span-2 text-center font-semibold text-slate-600">
+                    <div className="col-span-2 text-center font-bold text-slate-600 text-[11px]">
                       {item.gstRate}% GST
                     </div>
 
@@ -301,7 +333,7 @@ export const PurchasesPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => removeItemLine(idx)}
-                        className="text-slate-400 hover:text-red-600"
+                        className="text-slate-400 hover:text-rose-600 p-1 rounded-lg hover:bg-rose-50 transition"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -309,7 +341,7 @@ export const PurchasesPage: React.FC = () => {
                   </div>
                 ))}
 
-                <div className="text-right pt-2 font-bold text-slate-900 text-sm">
+                <div className="text-right pt-2 font-black text-slate-900 text-sm font-mono">
                   Estimated Total: ₹{computedTotal.toFixed(2)}
                 </div>
               </div>
@@ -317,43 +349,43 @@ export const PurchasesPage: React.FC = () => {
               {/* Payment Info */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Amount Paid (₹)</label>
+                  <label className="block font-bold text-slate-700 mb-1">Amount Paid (₹)</label>
                   <input
                     type="number"
                     step="0.01"
                     value={amountPaid}
                     onChange={(e) => setAmountPaid(parseFloat(e.target.value) || 0)}
                     placeholder={String(computedTotal)}
-                    className="w-full rounded border border-slate-300 p-2 font-bold text-slate-900"
+                    className="w-full rounded-xl border border-slate-300 p-2.5 font-black text-slate-900 font-mono"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Payment Mode</label>
+                  <label className="block font-bold text-slate-700 mb-1">Payment Mode</label>
                   <select
                     value={paymentMode}
                     onChange={(e) => setPaymentMode(e.target.value)}
-                    className="w-full rounded border border-slate-300 p-2 text-slate-900"
+                    className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 font-semibold"
                   >
                     <option value="BANK_TRANSFER">Bank Transfer (NEFT/RTGS)</option>
-                    <option value="UPI">UPI</option>
+                    <option value="UPI">UPI Payment</option>
                     <option value="CASH">Cash Drawer</option>
                   </select>
                 </div>
               </div>
 
-              <div className="mt-6 flex justify-end gap-2 border-t border-slate-200 pt-3">
+              <div className="mt-6 flex justify-end gap-3 border-t border-slate-100 pt-4">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="rounded-lg border border-slate-300 px-4 py-2 font-semibold text-slate-600 hover:bg-slate-100"
+                  className="rounded-xl border border-slate-300 px-4 py-2 font-bold text-slate-600 hover:bg-slate-100 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="rounded-lg bg-blue-600 px-5 py-2 font-bold text-white hover:bg-blue-700 disabled:opacity-50"
+                  className="rounded-xl bg-blue-600 px-5 py-2 font-black text-white hover:bg-blue-700 disabled:opacity-50 transition shadow-md shadow-blue-500/20"
                 >
                   {isSubmitting ? 'Saving...' : 'Confirm & Receive Stock'}
                 </button>

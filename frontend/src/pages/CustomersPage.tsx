@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Plus, Search, Phone, Mail, MapPin, AlertCircle, Star, History, Award, X } from 'lucide-react';
+import { Users, Plus, Search, Phone, Mail, MapPin, AlertCircle, Star, History, Award, X, UserCheck, ShieldCheck } from 'lucide-react';
 import axiosClient from '../api/axiosClient';
 import { Customer, LoyaltyTransaction } from '../types';
 
@@ -81,179 +81,219 @@ export const CustomersPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-5">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-black text-slate-900 tracking-tight">Customer Directory & Credit Ledgers</h1>
-          <p className="text-xs text-slate-500 mt-0.5">Manage supermarket customers, phone numbers and outstanding balances</p>
+    <div className="space-y-5 antialiased">
+      {/* Top Header Card */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-200/80 shadow-2xs">
+            <Users className="h-6 w-6" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl font-black text-slate-900 tracking-tight">Customer Directory &amp; Credit Ledgers</h1>
+              <span className="rounded-full bg-slate-100 text-slate-700 text-xs font-bold px-2.5 py-0.5 border border-slate-200">
+                {customers.length} accounts
+              </span>
+            </div>
+            <p className="text-xs text-slate-500 mt-0.5">Manage customer phone numbers, loyalty point balances and Khata credit</p>
+          </div>
         </div>
+
         <button
           onClick={() => {
             setErrorMsg(null);
             setIsModalOpen(true);
           }}
-          className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-blue-700 transition"
+          className="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-xs font-black text-white shadow-md shadow-blue-500/20 hover:bg-blue-700 active:scale-[0.99] transition"
         >
           <Plus className="h-4 w-4" />
           <span>Add New Customer</span>
         </button>
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm max-w-md">
+      {/* Filter / Search Bar */}
+      <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-sm max-w-lg">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+          <Search className="pointer-events-none absolute left-3.5 top-2.5 h-4 w-4 text-slate-400" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by customer name or phone..."
-            className="w-full rounded-lg border border-slate-300 bg-slate-50 py-2 pl-9 pr-3 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none"
+            placeholder="Search by customer name or 10-digit mobile phone..."
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 pl-10 pr-3 text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"
           />
         </div>
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-        <table className="w-full text-left text-xs border-collapse">
-          <thead>
-            <tr className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 uppercase tracking-wider text-[11px]">
-              <th className="p-3">Customer Name</th>
-              <th className="p-3">Phone</th>
-              <th className="p-3 text-center">Loyalty Points</th>
-              <th className="p-3">GSTIN</th>
-              <th className="p-3">Address</th>
-              <th className="p-3 text-right">Credit Limit (₹)</th>
-              <th className="p-3 text-right">Outstanding Balance (₹)</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {loading ? (
-              <tr>
-                <td colSpan={7} className="p-8 text-center text-slate-400">Loading customers...</td>
+      {/* Customers Table */}
+      <div className="rounded-2xl border border-slate-200/90 bg-white shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr className="bg-slate-100/80 text-slate-600 font-extrabold border-b border-slate-200 uppercase tracking-wider text-[10px]">
+                <th className="p-3.5">Customer Name</th>
+                <th className="p-3.5">Mobile Phone</th>
+                <th className="p-3.5 text-center">Loyalty Rewards</th>
+                <th className="p-3.5">GSTIN</th>
+                <th className="p-3.5">Address</th>
+                <th className="p-3.5 text-right">Credit Limit (₹)</th>
+                <th className="p-3.5 text-right">Khata Balance (₹)</th>
               </tr>
-            ) : customers.length === 0 ? (
-              <tr>
-                <td colSpan={7} className="p-8 text-center text-slate-400">No customers found.</td>
-              </tr>
-            ) : (
-              customers.map((c) => (
-                <tr key={c.id} className="hover:bg-slate-50 transition">
-                  <td className="p-3 font-bold text-slate-900 text-sm">
-                    {c.name}
-                    {c.id === 1 && (
-                      <span className="ml-2 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold px-1.5 py-0.5 border border-emerald-200">
-                        Default Walk-in
-                      </span>
-                    )}
-                  </td>
-                  <td className="p-3 font-mono text-slate-600">{c.phone}</td>
-                  <td className="p-3 text-center">
-                    {c.id === 1 ? (
-                      <span className="text-slate-400 font-mono text-xs">-</span>
-                    ) : (
-                      <div className="inline-flex items-center gap-1.5">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold px-2 py-0.5 shadow-2xs">
-                          <Star className="h-3 w-3 fill-amber-400 text-amber-500" />
-                          <span>{c.loyalty_points || 0} pts</span>
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => openLoyaltyHistory(c)}
-                          className="rounded p-1 text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition"
-                          title="View Loyalty History & Ledger"
-                        >
-                          <History className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
-                    )}
-                  </td>
-                  <td className="p-3 font-mono text-slate-500">{c.gstin || '-'}</td>
-                  <td className="p-3 text-slate-600 truncate max-w-xs">{c.address || '-'}</td>
-                  <td className="p-3 text-right font-medium text-slate-700">₹{Number(c.credit_limit).toFixed(2)}</td>
-                  <td className="p-3 text-right font-bold font-mono">
-                    <span className={Number(c.current_balance) > 0 ? 'text-red-600' : 'text-emerald-700'}>
-                      ₹{Number(c.current_balance).toFixed(2)}
-                    </span>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {loading ? (
+                <tr>
+                  <td colSpan={7} className="p-10 text-center text-slate-400">
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="h-6 w-6 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+                      <span className="text-xs font-semibold">Loading customer ledgers...</span>
+                    </div>
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : customers.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="p-10 text-center text-slate-400">
+                    No customers found matching your search.
+                  </td>
+                </tr>
+              ) : (
+                customers.map((c) => (
+                  <tr key={c.id} className="hover:bg-slate-50/70 transition">
+                    <td className="p-3.5 font-extrabold text-slate-900 text-xs">
+                      {c.name}
+                      {c.id === 1 && (
+                        <span className="ml-2 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-0.5 border border-emerald-200">
+                          Walk-in Default
+                        </span>
+                      )}
+                    </td>
+                    <td className="p-3.5 font-mono font-bold text-slate-700 text-xs">{c.phone}</td>
+                    <td className="p-3.5 text-center">
+                      {c.id === 1 ? (
+                        <span className="text-slate-400 font-mono text-xs">-</span>
+                      ) : (
+                        <div className="inline-flex items-center gap-1.5">
+                          <span className="inline-flex items-center gap-1 rounded-lg bg-amber-50 border border-amber-200/90 text-amber-800 text-[11px] font-bold px-2 py-0.5 shadow-2xs">
+                            <Star className="h-3 w-3 fill-amber-400 text-amber-500" />
+                            <span>{c.loyalty_points || 0} pts</span>
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => openLoyaltyHistory(c)}
+                            className="rounded-lg p-1 text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition"
+                            title="View Points History & Ledger"
+                          >
+                            <History className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                    <td className="p-3.5 font-mono text-slate-500 text-[11px]">{c.gstin || '-'}</td>
+                    <td className="p-3.5 text-slate-600 truncate max-w-xs">{c.address || '-'}</td>
+                    <td className="p-3.5 text-right font-medium text-slate-500 font-mono">₹{Number(c.credit_limit).toFixed(2)}</td>
+                    <td className="p-3.5 text-right font-black font-mono text-xs">
+                      <span className={Number(c.current_balance) > 0 ? 'text-rose-600' : 'text-emerald-700'}>
+                        ₹{Number(c.current_balance).toFixed(2)}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
+      {/* Add Customer Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl">
-            <h2 className="text-base font-bold text-slate-900 mb-3">Add Customer</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl border border-slate-200">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+              <h2 className="text-base font-black text-slate-900 flex items-center gap-2">
+                <div className="p-1 rounded-md bg-blue-50 text-blue-600">
+                  <Users className="h-4 w-4" />
+                </div>
+                <span>Enroll New Customer</span>
+              </h2>
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+              >
+                ✕
+              </button>
+            </div>
+
             {errorMsg && (
-              <div className="mb-3 flex items-center gap-2 rounded bg-red-50 p-2 text-xs text-red-700">
-                <AlertCircle className="h-4 w-4 shrink-0" />
+              <div className="mb-4 flex items-center gap-2 rounded-xl bg-rose-50 p-3 text-xs text-rose-700 border border-rose-200 font-semibold">
+                <AlertCircle className="h-4 w-4 shrink-0 text-rose-600" />
                 <span>{errorMsg}</span>
               </div>
             )}
-            <form onSubmit={handleSaveCustomer} className="space-y-3 text-xs">
+
+            <form onSubmit={handleSaveCustomer} className="space-y-3.5 text-xs">
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Customer Full Name *</label>
+                <label className="block font-bold text-slate-700 mb-1">Customer Full Name *</label>
                 <input
                   type="text"
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="e.g. Ramesh Kumar"
-                  className="w-full rounded border border-slate-300 p-2 text-slate-900"
+                  className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 font-medium focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
               </div>
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Mobile Phone *</label>
+                <label className="block font-bold text-slate-700 mb-1">Mobile Phone (10 digits) *</label>
                 <input
                   type="text"
                   required
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   placeholder="e.g. 9840112233"
-                  className="w-full rounded border border-slate-300 p-2 text-slate-900"
+                  className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 font-mono font-bold focus:outline-none focus:border-blue-500"
                 />
               </div>
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">GSTIN (Optional)</label>
+                <label className="block font-bold text-slate-700 mb-1">GSTIN (Optional)</label>
                 <input
                   type="text"
                   value={formData.gstin}
                   onChange={(e) => setFormData({ ...formData, gstin: e.target.value })}
                   placeholder="33AAAPL1234A1Z1"
-                  className="w-full rounded border border-slate-300 p-2 text-slate-900 font-mono"
+                  className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 font-mono"
                 />
               </div>
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Address</label>
+                <label className="block font-bold text-slate-700 mb-1">Billing Address</label>
                 <input
                   type="text"
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  placeholder="Street, Area, City"
-                  className="w-full rounded border border-slate-300 p-2 text-slate-900"
+                  placeholder="Street, Landmark, City"
+                  className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900"
                 />
               </div>
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Credit Limit (₹)</label>
+                <label className="block font-bold text-slate-700 mb-1">Credit / Khata Limit (₹)</label>
                 <input
                   type="number"
                   value={formData.creditLimit}
                   onChange={(e) => setFormData({ ...formData, creditLimit: parseFloat(e.target.value) || 0 })}
-                  className="w-full rounded border border-slate-300 p-2 text-slate-900 font-bold"
+                  className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 font-bold font-mono"
                 />
               </div>
-              <div className="mt-5 flex justify-end gap-2 pt-3 border-t border-slate-200">
+              <div className="mt-6 flex justify-end gap-3 pt-3 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="rounded-lg border border-slate-300 px-3 py-1.5 font-semibold text-slate-600 hover:bg-slate-100"
+                  className="rounded-xl border border-slate-300 px-4 py-2 font-bold text-slate-600 hover:bg-slate-100 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="rounded-lg bg-blue-600 px-4 py-1.5 font-bold text-white hover:bg-blue-700"
+                  className="rounded-xl bg-blue-600 px-5 py-2 font-black text-white hover:bg-blue-700 transition shadow-md shadow-blue-500/20"
                 >
                   Save Customer
                 </button>
@@ -265,20 +305,20 @@ export const CustomersPage: React.FC = () => {
 
       {/* Loyalty History & Ledger Modal */}
       {isLoyaltyModalOpen && selectedCustomerForLoyalty && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-          <div className="w-full max-w-2xl rounded-2xl bg-white shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
+          <div className="w-full max-w-2xl rounded-2xl bg-white shadow-2xl border border-slate-200 overflow-hidden">
             {/* Modal Header */}
-            <div className="flex items-center justify-between bg-slate-900 px-6 py-4 text-white">
+            <div className="flex items-center justify-between bg-gradient-to-r from-slate-900 to-blue-950 px-6 py-4 text-white">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-amber-500/20 rounded-xl text-amber-400 border border-amber-500/30">
                   <Award className="h-6 w-6" />
                 </div>
                 <div>
-                  <h2 className="text-base font-bold flex items-center gap-2">
+                  <h2 className="text-base font-extrabold flex items-center gap-2">
                     <span>{selectedCustomerForLoyalty.name}</span>
-                    <span className="text-xs font-mono font-normal text-slate-400">({selectedCustomerForLoyalty.phone})</span>
+                    <span className="text-xs font-mono font-normal text-slate-300">({selectedCustomerForLoyalty.phone})</span>
                   </h2>
-                  <p className="text-xs text-slate-300">Customer Loyalty Points Ledger & Transaction History</p>
+                  <p className="text-xs text-slate-300">Loyalty Points Balance Ledger &amp; Transaction Activity</p>
                 </div>
               </div>
               <button
@@ -299,7 +339,7 @@ export const CustomersPage: React.FC = () => {
               {loadingLoyaltyHistory ? (
                 <div className="py-12 text-center text-slate-400">
                   <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-amber-500 border-t-transparent mb-2" />
-                  <p className="text-xs">Loading loyalty history...</p>
+                  <p className="text-xs font-semibold">Loading loyalty transactions...</p>
                 </div>
               ) : (
                 <>
@@ -341,11 +381,11 @@ export const CustomersPage: React.FC = () => {
                   {/* Transactions Table */}
                   <div className="space-y-2">
                     <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">Point Activity History</h3>
-                    <div className="rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+                    <div className="rounded-xl border border-slate-200 overflow-hidden shadow-2xs">
                       <table className="w-full text-left text-xs border-collapse">
                         <thead>
                           <tr className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 text-[10px] uppercase">
-                            <th className="p-2.5">Date & Time</th>
+                            <th className="p-2.5">Date &amp; Time</th>
                             <th className="p-2.5">Type</th>
                             <th className="p-2.5 text-right">Points</th>
                             <th className="p-2.5 text-right">Value (₹)</th>
@@ -411,7 +451,7 @@ export const CustomersPage: React.FC = () => {
                   setSelectedCustomerForLoyalty(null);
                   setLoyaltyHistory(null);
                 }}
-                className="rounded-lg bg-slate-800 px-4 py-1.5 text-xs font-bold text-white hover:bg-slate-700 transition"
+                className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800 transition"
               >
                 Close
               </button>
