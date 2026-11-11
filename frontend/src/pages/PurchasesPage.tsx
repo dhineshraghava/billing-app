@@ -130,19 +130,19 @@ export const PurchasesPage: React.FC = () => {
   return (
     <div className="space-y-5 antialiased">
       {/* Top Header Card */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-200/80 shadow-2xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 shadow-sm">
+        <div className="flex items-center gap-3.5">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-700 border border-blue-300 shadow-2xs">
             <Truck className="h-6 w-6" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-black text-slate-900 tracking-tight">Supplier Purchases &amp; Inward Invoices</h1>
-              <span className="rounded-full bg-slate-100 text-slate-700 text-xs font-bold px-2.5 py-0.5 border border-slate-200">
+            <div className="flex items-center gap-2.5">
+              <h1 className="text-2xl font-black text-slate-900 tracking-tight">Supplier Purchases &amp; Inward Invoices</h1>
+              <span className="rounded-full bg-slate-100 text-slate-800 text-xs font-black px-3 py-1 border border-slate-300">
                 {purchases.length} orders
               </span>
             </div>
-            <p className="text-xs text-slate-500 mt-0.5">Record wholesale goods received and automatically replenish warehouse stock</p>
+            <p className="text-sm text-slate-600 font-medium mt-0.5">Record wholesale goods received and automatically replenish warehouse stock</p>
           </div>
         </div>
 
@@ -154,9 +154,9 @@ export const PurchasesPage: React.FC = () => {
             setErrorMsg(null);
             setIsModalOpen(true);
           }}
-          className="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-xs font-black text-white shadow-md shadow-blue-500/20 hover:bg-blue-700 active:scale-[0.99] transition"
+          className="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-black text-white shadow-md shadow-blue-600/30 hover:bg-blue-700 active:scale-[0.99] transition"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-4.5 w-4.5" />
           <span>Record Inward Purchase</span>
         </button>
       </div>
@@ -164,9 +164,9 @@ export const PurchasesPage: React.FC = () => {
       {/* Purchases Table */}
       <div className="rounded-2xl border border-slate-200/90 bg-white shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
+          <table className="w-full text-left text-xs sm:text-sm border-collapse">
             <thead>
-              <tr className="bg-slate-100/80 text-slate-600 font-extrabold border-b border-slate-200 uppercase tracking-wider text-[10px]">
+              <tr className="bg-slate-100 text-slate-800 font-black border-b border-slate-300 uppercase tracking-wider text-xs">
                 <th className="p-3.5">Purchase #</th>
                 <th className="p-3.5">Supplier Invoice #</th>
                 <th className="p-3.5">Date</th>
@@ -177,37 +177,37 @@ export const PurchasesPage: React.FC = () => {
                 <th className="p-3.5">Received By</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-200">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="p-10 text-center text-slate-400">
+                  <td colSpan={8} className="p-10 text-center text-slate-500 font-semibold">
                     <div className="flex flex-col items-center gap-2">
-                      <div className="h-6 w-6 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
-                      <span className="text-xs font-semibold">Loading purchase orders...</span>
+                      <div className="h-7 w-7 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+                      <span className="text-sm font-bold">Loading purchase orders...</span>
                     </div>
                   </td>
                 </tr>
               ) : purchases.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="p-10 text-center text-slate-400">
+                  <td colSpan={8} className="p-10 text-center text-slate-500 font-semibold">
                     No supplier purchases recorded yet.
                   </td>
                 </tr>
               ) : (
                 purchases.map((p) => (
                   <tr key={p.id} className="hover:bg-slate-50/70 transition">
-                    <td className="p-3.5 font-mono font-bold text-blue-700 text-xs">{p.invoice_number}</td>
-                    <td className="p-3.5 font-mono text-slate-600 font-medium">{p.supplier_invoice_number || '-'}</td>
-                    <td className="p-3.5 font-mono text-slate-600 text-[11px]">{new Date(p.invoice_date).toLocaleDateString()}</td>
-                    <td className="p-3.5 font-extrabold text-slate-900 text-xs">{p.supplier_name}</td>
-                    <td className="p-3.5 text-right font-mono font-black text-slate-900 text-xs">₹{Number(p.grand_total).toFixed(2)}</td>
-                    <td className="p-3.5 text-right font-mono text-emerald-700 font-bold">₹{Number(p.amount_paid).toFixed(2)}</td>
+                    <td className="p-3.5 font-mono font-black text-blue-700 text-sm">{p.invoice_number}</td>
+                    <td className="p-3.5 font-mono text-slate-700 font-bold text-xs">{p.supplier_invoice_number || '-'}</td>
+                    <td className="p-3.5 font-mono text-slate-700 font-bold text-xs">{new Date(p.invoice_date).toLocaleDateString()}</td>
+                    <td className="p-3.5 font-extrabold text-slate-900 text-sm">{p.supplier_name}</td>
+                    <td className="p-3.5 text-right font-mono font-black text-slate-900 text-sm sm:text-base">₹{Number(p.grand_total).toFixed(2)}</td>
+                    <td className="p-3.5 text-right font-mono text-emerald-800 font-extrabold text-sm">₹{Number(p.amount_paid).toFixed(2)}</td>
                     <td className="p-3.5 text-center">
-                      <span className="rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold">
+                      <span className="rounded-md bg-emerald-100 text-emerald-800 border border-emerald-300 px-2.5 py-1 text-xs font-black">
                         {p.payment_status}
                       </span>
                     </td>
-                    <td className="p-3.5 text-slate-600 font-medium">{p.received_by_name}</td>
+                    <td className="p-3.5 text-slate-700 font-semibold text-xs">{p.received_by_name}</td>
                   </tr>
                 ))
               )}

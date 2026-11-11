@@ -266,23 +266,23 @@ export const ProductsPage: React.FC = () => {
   return (
     <div className="space-y-5 antialiased">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-200/80 shadow-2xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 shadow-sm">
+        <div className="flex items-center gap-3.5">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-700 border border-blue-300 shadow-2xs">
             <Package className="h-6 w-6" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-black text-slate-900 tracking-tight">Product Catalog &amp; Master List</h1>
-              <span className="rounded-full bg-slate-100 text-slate-700 text-xs font-bold px-2.5 py-0.5 border border-slate-200">
+            <div className="flex items-center gap-2.5">
+              <h1 className="text-2xl font-black text-slate-900 tracking-tight">Product Catalog &amp; Master List</h1>
+              <span className="rounded-full bg-slate-100 text-slate-800 text-xs font-black px-3 py-1 border border-slate-300">
                 {totalRecords} items
               </span>
             </div>
-            <p className="text-xs text-slate-500 mt-0.5">Manage supermarket products, barcodes, GST slabs and price levels</p>
+            <p className="text-sm text-slate-600 font-medium mt-0.5">Manage supermarket products, barcodes, GST slabs and price levels</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2.5 flex-wrap">
           <input
             type="file"
             ref={fileInputRef}
@@ -292,25 +292,25 @@ export const ProductsPage: React.FC = () => {
           />
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 shadow-2xs hover:bg-slate-50 transition"
+            className="flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-extrabold text-slate-800 shadow-2xs hover:bg-slate-50 transition"
             title="Import products from CSV spreadsheet"
           >
-            <Upload className="h-3.5 w-3.5 text-slate-500" />
+            <Upload className="h-4 w-4 text-slate-600" />
             <span>Import CSV</span>
           </button>
           <button
             onClick={handleExportCsv}
-            className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 shadow-2xs hover:bg-slate-50 transition"
+            className="flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-extrabold text-slate-800 shadow-2xs hover:bg-slate-50 transition"
             title="Export full catalog to CSV"
           >
-            <Download className="h-3.5 w-3.5 text-slate-500" />
+            <Download className="h-4 w-4 text-slate-600" />
             <span>Export CSV</span>
           </button>
           <button
             onClick={openAddModal}
-            className="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-xs font-black text-white shadow-md shadow-blue-500/20 hover:bg-blue-700 active:scale-[0.99] transition"
+            className="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-black text-white shadow-md shadow-blue-600/30 hover:bg-blue-700 active:scale-[0.99] transition"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-4.5 w-4.5" />
             <span>Add New Product</span>
           </button>
         </div>
@@ -321,7 +321,7 @@ export const ProductsPage: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {/* Search */}
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3.5 top-2.5 h-4 w-4 text-slate-400" />
+            <Search className="pointer-events-none absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
             <input
               type="text"
               value={search}
@@ -330,7 +330,7 @@ export const ProductsPage: React.FC = () => {
                 setPage(1);
               }}
               placeholder="Search by product name, barcode or SKU..."
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 pl-10 pr-3 text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"
+              className="w-full rounded-xl border border-slate-300 bg-slate-50 py-2.5 pl-10 pr-3 text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal focus:bg-white focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition"
             />
           </div>
 
@@ -341,7 +341,7 @@ export const ProductsPage: React.FC = () => {
               setSelectedCategory(e.target.value);
               setPage(1);
             }}
-            className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 focus:bg-white focus:outline-none focus:border-blue-500 transition"
+            className="rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm font-bold text-slate-800 focus:bg-white focus:outline-none focus:border-blue-600 transition"
           >
             <option value="">All Categories ({categories.length})</option>
             {categories.map((c) => (
@@ -358,7 +358,7 @@ export const ProductsPage: React.FC = () => {
               setStockStatus(e.target.value);
               setPage(1);
             }}
-            className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 focus:bg-white focus:outline-none focus:border-blue-500 transition"
+            className="rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm font-bold text-slate-800 focus:bg-white focus:outline-none focus:border-blue-600 transition"
           >
             <option value="">All Stock Levels</option>
             <option value="low">Low Stock (≤ Minimum Alert)</option>
@@ -370,9 +370,9 @@ export const ProductsPage: React.FC = () => {
       {/* Products Table */}
       <div className="rounded-2xl border border-slate-200/90 bg-white shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
+          <table className="w-full text-left text-xs sm:text-sm border-collapse">
             <thead>
-              <tr className="bg-slate-100/80 text-slate-600 font-extrabold border-b border-slate-200 uppercase tracking-wider text-[10px]">
+              <tr className="bg-slate-100 text-slate-800 font-black border-b border-slate-300 uppercase tracking-wider text-xs">
                 <th className="p-3.5">Product Name</th>
                 <th className="p-3.5">Barcode / SKU</th>
                 <th className="p-3.5">Category</th>
@@ -385,19 +385,19 @@ export const ProductsPage: React.FC = () => {
                 <th className="p-3.5 text-center">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-200">
               {loading ? (
                 <tr>
-                  <td colSpan={10} className="p-10 text-center text-slate-400">
+                  <td colSpan={10} className="p-10 text-center text-slate-500 font-semibold">
                     <div className="flex flex-col items-center gap-2">
-                      <div className="h-6 w-6 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
-                      <span className="text-xs font-semibold">Loading catalog from database...</span>
+                      <div className="h-7 w-7 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+                      <span className="text-sm font-bold">Loading catalog from database...</span>
                     </div>
                   </td>
                 </tr>
               ) : products.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className="p-10 text-center text-slate-400">
+                  <td colSpan={10} className="p-10 text-center text-slate-500 font-semibold">
                     No products matched your search or filters.
                   </td>
                 </tr>
@@ -405,34 +405,34 @@ export const ProductsPage: React.FC = () => {
                 products.map((p) => (
                   <tr key={p.id} className="hover:bg-slate-50/70 transition">
                     <td className="p-3.5">
-                      <div className="font-extrabold text-slate-900 text-xs">{p.name}</div>
-                      <div className="text-[10px] text-slate-400 font-mono mt-0.5">HSN: {p.hsn_code}</div>
+                      <div className="font-extrabold text-slate-900 text-sm leading-snug">{p.name}</div>
+                      <div className="text-xs text-slate-500 font-mono font-bold mt-0.5">HSN: {p.hsn_code}</div>
                     </td>
-                    <td className="p-3.5 font-mono text-slate-600">
-                      <div className="font-bold text-slate-800 text-[11px]">{p.barcode}</div>
-                      <div className="text-[10px] text-slate-400">{p.sku}</div>
+                    <td className="p-3.5 font-mono text-slate-700">
+                      <div className="font-bold text-slate-900 text-xs">{p.barcode}</div>
+                      <div className="text-xs text-slate-500">{p.sku}</div>
                     </td>
-                    <td className="p-3.5 text-slate-700 font-semibold">{p.category_name}</td>
+                    <td className="p-3.5 text-slate-800 font-bold text-xs">{p.category_name}</td>
                     <td className="p-3.5 text-center">
-                      <span className="rounded-md bg-slate-100 px-2 py-0.5 font-bold text-slate-700 text-[11px] border border-slate-200/80">
+                      <span className="rounded-md bg-slate-100 px-2.5 py-0.5 font-black text-slate-800 text-xs border border-slate-300">
                         {p.unit_code}
                       </span>
                     </td>
-                    <td className="p-3.5 text-right font-medium text-slate-500 font-mono">₹{Number(p.purchase_price).toFixed(2)}</td>
-                    <td className="p-3.5 text-right font-black text-slate-900 font-mono text-xs">₹{Number(p.selling_price).toFixed(2)}</td>
+                    <td className="p-3.5 text-right font-bold text-slate-600 font-mono text-xs">₹{Number(p.purchase_price).toFixed(2)}</td>
+                    <td className="p-3.5 text-right font-black text-slate-900 font-mono text-sm sm:text-base">₹{Number(p.selling_price).toFixed(2)}</td>
                     <td className="p-3.5 text-center">
-                      <span className="rounded-md bg-blue-50 px-2 py-0.5 text-blue-700 font-bold border border-blue-200/80 text-[10px]">
+                      <span className="rounded-md bg-blue-100 px-2.5 py-0.5 text-blue-800 font-black border border-blue-300 text-xs">
                         {p.gst_rate}%
                       </span>
                     </td>
                     <td className="p-3.5 text-right font-bold font-mono">
                       <span
-                        className={`inline-block rounded-md px-2 py-0.5 text-xs font-bold border ${
+                        className={`inline-block rounded-md px-2.5 py-1 text-xs font-black border ${
                           Number(p.current_stock) <= 0
-                            ? 'bg-rose-50 text-rose-700 border-rose-200'
+                            ? 'bg-rose-100 text-rose-800 border-rose-300'
                             : Number(p.current_stock) <= Number(p.min_stock_qty)
-                            ? 'bg-amber-50 text-amber-700 border-amber-200'
-                            : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            ? 'bg-amber-100 text-amber-800 border-amber-300'
+                            : 'bg-emerald-100 text-emerald-800 border-emerald-300'
                         }`}
                       >
                         {Number(p.current_stock)} {p.unit_code}
@@ -441,11 +441,11 @@ export const ProductsPage: React.FC = () => {
                     <td className="p-3.5 text-center">
                       <button
                         onClick={() => handleToggleStatus(p.id, Boolean(p.is_active))}
-                        className={`inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full ${
-                          p.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-500 border border-slate-200'
+                        className={`inline-flex items-center gap-1.5 text-xs font-black px-2.5 py-1 rounded-full ${
+                          p.is_active ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-slate-100 text-slate-600 border border-slate-300'
                         }`}
                       >
-                        <span className={`h-1.5 w-1.5 rounded-full ${p.is_active ? 'bg-emerald-500' : 'bg-slate-400'}`} />
+                        <span className={`h-2 w-2 rounded-full ${p.is_active ? 'bg-emerald-600' : 'bg-slate-400'}`} />
                         <span>{p.is_active ? 'Active' : 'Inactive'}</span>
                       </button>
                     </td>

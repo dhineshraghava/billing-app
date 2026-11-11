@@ -243,12 +243,12 @@ export const MainLayout: React.FC = () => {
             </div>
             {!sidebarCollapsed && (
               <div className="overflow-hidden animate-in fade-in duration-200">
-                <div className="font-extrabold text-sm tracking-tight text-white leading-tight truncate">
+                <div className="font-extrabold text-[15px] tracking-tight text-white leading-tight truncate">
                   {storeName}
                 </div>
                 <div className="flex items-center gap-1.5 mt-0.5">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-[10px] text-blue-300 font-bold tracking-wider uppercase">Hypermarket POS</span>
+                  <span className="text-[11px] text-blue-300 font-extrabold tracking-wider uppercase">Hypermarket POS</span>
                 </div>
               </div>
             )}
@@ -312,7 +312,7 @@ export const MainLayout: React.FC = () => {
         </div>
 
         {/* Grouped Navigation Links */}
-        <nav className="flex-1 space-y-4 overflow-y-auto px-2.5 py-2 text-xs font-medium custom-scrollbar">
+        <nav className="flex-1 space-y-4 overflow-y-auto px-2.5 py-2 text-sm font-semibold custom-scrollbar">
           {navSections.map((sec) => {
             const visibleItems = sec.items.filter((item) => !item.roles || hasRole(item.roles));
             if (visibleItems.length === 0) return null;
@@ -320,7 +320,7 @@ export const MainLayout: React.FC = () => {
             return (
               <div key={sec.title} className="space-y-1">
                 {!sidebarCollapsed ? (
-                  <div className="px-2.5 text-[9px] font-extrabold uppercase tracking-widest text-slate-400/90 py-1">
+                  <div className="px-3 text-[11px] font-extrabold uppercase tracking-widest text-slate-400 py-1.5">
                     {sec.title}
                   </div>
                 ) : (
@@ -339,29 +339,29 @@ export const MainLayout: React.FC = () => {
                       title={sidebarCollapsed ? item.label : undefined}
                       className={({ isActive }) =>
                         `group flex items-center ${
-                          sidebarCollapsed ? 'justify-center px-0' : 'justify-between px-3'
-                        } rounded-xl py-2.5 transition-all duration-150 relative ${
+                          sidebarCollapsed ? 'justify-center px-0' : 'justify-between px-3.5'
+                        } rounded-xl py-2.5 text-[15px] font-bold tracking-tight transition-all duration-150 relative ${
                           isActive
-                            ? 'bg-gradient-to-r from-blue-600 to-indigo-600 font-bold text-white shadow-lg shadow-blue-600/25'
+                            ? 'bg-gradient-to-r from-blue-600 to-indigo-600 font-extrabold text-white shadow-lg shadow-blue-600/30'
                             : isPos
-                            ? 'text-emerald-400 hover:bg-slate-800/60 hover:text-emerald-300'
-                            : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
+                            ? 'text-emerald-400 font-bold hover:bg-slate-800/70 hover:text-emerald-300'
+                            : 'text-slate-200 font-bold hover:bg-slate-800/70 hover:text-white'
                         }`
                       }
                     >
                       {({ isActive }) => (
                         <>
                           {isActive && (
-                            <span className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-white rounded-r-full shadow-xs" />
+                            <span className="absolute left-0 top-1.5 bottom-1.5 w-1.5 bg-white rounded-r-full shadow-xs" />
                           )}
                           <div className={`flex items-center gap-3 ${sidebarCollapsed ? 'justify-center' : ''}`}>
-                            <Icon className={`h-4 w-4 shrink-0 transition-transform group-hover:scale-110 ${
-                              isActive ? 'text-white' : isPos ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'
+                            <Icon className={`h-4.5 w-4.5 shrink-0 transition-transform group-hover:scale-110 ${
+                              isActive ? 'text-white' : isPos ? 'text-emerald-400' : 'text-slate-300 group-hover:text-white'
                             }`} />
                             {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
                           </div>
                           {!sidebarCollapsed && isPos && (
-                            <span className="rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.5 text-[9px] font-mono font-bold">
+                            <span className="rounded-md bg-emerald-500/25 text-emerald-300 border border-emerald-500/40 px-2 py-0.5 text-[11px] font-mono font-black">
                               F9
                             </span>
                           )}
@@ -384,11 +384,11 @@ export const MainLayout: React.FC = () => {
               </div>
               {!sidebarCollapsed && (
                 <div className="overflow-hidden animate-in fade-in duration-200">
-                  <div className="truncate text-xs font-bold text-white leading-tight">
+                  <div className="truncate text-sm font-extrabold text-white leading-tight">
                     {user?.fullName || user?.username}
                   </div>
                   <span
-                    className={`inline-block rounded border px-1.5 py-0.2 text-[9px] font-bold uppercase tracking-wider mt-0.5 ${roleBadgeColor}`}
+                    className={`inline-block rounded-md border px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wider mt-1 ${roleBadgeColor}`}
                   >
                     {user?.roleName?.replace('_', ' ')}
                   </span>
@@ -443,10 +443,10 @@ export const MainLayout: React.FC = () => {
             )}
 
             {/* Current Active Page Breadcrumb */}
-            <div className="hidden sm:flex items-center gap-2 text-xs font-semibold text-slate-500">
-              <span className="font-bold text-slate-800 hover:text-blue-600 cursor-pointer" onClick={() => navigate('/')}>{storeName}</span>
-              <ChevronRight className="h-3.5 w-3.5 text-slate-400" />
-              <span className="capitalize text-blue-600 font-bold bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md">
+            <div className="hidden sm:flex items-center gap-2 text-sm font-bold text-slate-600">
+              <span className="font-extrabold text-slate-900 hover:text-blue-600 cursor-pointer" onClick={() => navigate('/')}>{storeName}</span>
+              <ChevronRight className="h-4 w-4 text-slate-400" />
+              <span className="capitalize text-blue-700 font-extrabold bg-blue-100 border border-blue-300 px-2.5 py-0.5 rounded-lg text-xs">
                 {location.pathname === '/' ? 'Business Dashboard' : location.pathname.replace('/', '').replace('-', ' ')}
               </span>
             </div>
@@ -455,8 +455,8 @@ export const MainLayout: React.FC = () => {
           {/* Right Header Badges */}
           <div className="flex items-center gap-3">
             {/* Live Operational Clock */}
-            <div className="hidden md:flex items-center gap-1.5 rounded-lg bg-slate-50 border border-slate-200 px-3 py-1.5 text-xs font-mono font-bold text-slate-700">
-              <Clock className="h-3.5 w-3.5 text-slate-500" />
+            <div className="hidden md:flex items-center gap-1.5 rounded-xl bg-slate-100 border border-slate-300 px-3.5 py-1.5 text-sm font-mono font-extrabold text-slate-900">
+              <Clock className="h-4 w-4 text-blue-600" />
               <span>{currentTime}</span>
             </div>
 
@@ -466,13 +466,13 @@ export const MainLayout: React.FC = () => {
                 fetchCurrentShift();
                 setIsShiftModalOpen(true);
               }}
-              className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold border transition ${
+              className={`flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-extrabold border transition ${
                 currentShift
-                  ? 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
-                  : 'bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100'
+                  ? 'bg-emerald-100 text-emerald-900 border-emerald-400 hover:bg-emerald-200'
+                  : 'bg-amber-100 text-amber-900 border-amber-400 hover:bg-amber-200'
               }`}
             >
-              <span className={`h-2 w-2 rounded-full ${currentShift ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
+              <span className={`h-2.5 w-2.5 rounded-full ${currentShift ? 'bg-emerald-600 animate-pulse' : 'bg-amber-600'}`} />
               <span>{currentShift ? `${currentShift.register_name}: Active` : 'Register Closed'}</span>
             </button>
 

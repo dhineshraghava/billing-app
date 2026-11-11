@@ -150,23 +150,23 @@ export const SalesHistoryPage: React.FC = () => {
   return (
     <div className="space-y-5 antialiased">
       {/* Top Header Card */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-200/80 shadow-2xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 shadow-sm">
+        <div className="flex items-center gap-3.5">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-700 border border-blue-300 shadow-2xs">
             <Receipt className="h-6 w-6" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-black text-slate-900 tracking-tight">
+            <div className="flex items-center gap-2.5">
+              <h1 className="text-2xl font-black text-slate-900 tracking-tight">
                 {user?.roleName === 'CASHIER' || user?.roleName === 'SALESPERSON'
                   ? 'My Counter Sales History'
                   : 'Sales Invoices & Billing Archive'}
               </h1>
-              <span className="rounded-full bg-slate-100 text-slate-700 text-xs font-bold px-2.5 py-0.5 border border-slate-200">
+              <span className="rounded-full bg-slate-100 text-slate-800 text-xs font-black px-3 py-1 border border-slate-300">
                 {totalRecords} invoices
               </span>
             </div>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-sm text-slate-600 font-medium mt-0.5">
               {user?.roleName === 'CASHIER' || user?.roleName === 'SALESPERSON'
                 ? 'Review and reprint receipts for your completed customer counter transactions'
                 : 'Search, audit, reprint thermal receipts, and process returns across all cash registers'}
@@ -179,7 +179,7 @@ export const SalesHistoryPage: React.FC = () => {
       <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-sm">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3.5 top-2.5 h-4 w-4 text-slate-400" />
+            <Search className="pointer-events-none absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
             <input
               type="text"
               value={search}
@@ -188,7 +188,7 @@ export const SalesHistoryPage: React.FC = () => {
                 setPage(1);
               }}
               placeholder="Search by invoice number or customer phone..."
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 pl-10 pr-3 text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"
+              className="w-full rounded-xl border border-slate-300 bg-slate-50 py-2.5 pl-10 pr-3 text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition"
             />
           </div>
 
@@ -198,7 +198,7 @@ export const SalesHistoryPage: React.FC = () => {
               setStatus(e.target.value);
               setPage(1);
             }}
-            className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 focus:bg-white focus:outline-none focus:border-blue-500 transition"
+            className="rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm font-bold text-slate-800 focus:bg-white focus:outline-none focus:border-blue-600 transition"
           >
             <option value="">All Invoice Statuses</option>
             <option value="COMPLETED">Completed Invoices</option>
@@ -211,7 +211,7 @@ export const SalesHistoryPage: React.FC = () => {
               setPaymentStatus(e.target.value);
               setPage(1);
             }}
-            className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 focus:bg-white focus:outline-none focus:border-blue-500 transition"
+            className="rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm font-bold text-slate-800 focus:bg-white focus:outline-none focus:border-blue-600 transition"
           >
             <option value="">All Payment Modes &amp; Statuses</option>
             <option value="PAID">Fully Paid</option>
@@ -224,9 +224,9 @@ export const SalesHistoryPage: React.FC = () => {
       {/* Invoices Table */}
       <div className="rounded-2xl border border-slate-200/90 bg-white shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
+          <table className="w-full text-left text-xs sm:text-sm border-collapse">
             <thead>
-              <tr className="bg-slate-100/80 text-slate-600 font-extrabold border-b border-slate-200 uppercase tracking-wider text-[10px]">
+              <tr className="bg-slate-100 text-slate-800 font-black border-b border-slate-300 uppercase tracking-wider text-xs">
                 <th className="p-3.5">Invoice #</th>
                 <th className="p-3.5">Date &amp; Time</th>
                 <th className="p-3.5">Customer</th>
@@ -237,46 +237,46 @@ export const SalesHistoryPage: React.FC = () => {
                 <th className="p-3.5 text-center">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-200">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="p-10 text-center text-slate-400">
+                  <td colSpan={8} className="p-10 text-center text-slate-500 font-semibold">
                     <div className="flex flex-col items-center gap-2">
-                      <div className="h-6 w-6 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
-                      <span className="text-xs font-semibold">Loading sales invoices from database...</span>
+                      <div className="h-7 w-7 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+                      <span className="text-sm font-bold">Loading sales invoices from database...</span>
                     </div>
                   </td>
                 </tr>
               ) : sales.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="p-10 text-center text-slate-400">
+                  <td colSpan={8} className="p-10 text-center text-slate-500 font-semibold">
                     No sales invoices found matching your criteria.
                   </td>
                 </tr>
               ) : (
                 sales.map((inv) => (
                   <tr key={inv.id} className="hover:bg-slate-50/70 transition">
-                    <td className="p-3.5 font-mono font-bold text-blue-700 text-xs">{inv.invoice_number}</td>
-                    <td className="p-3.5 font-mono text-[11px] text-slate-600">
+                    <td className="p-3.5 font-mono font-black text-blue-700 text-sm">{inv.invoice_number}</td>
+                    <td className="p-3.5 font-mono text-xs font-bold text-slate-700">
                       {new Date(inv.invoice_date).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
                     </td>
                     <td className="p-3.5">
-                      <div className="font-extrabold text-slate-900 text-xs">{inv.customer_name || 'Walk-in Customer'}</div>
-                      <div className="text-[10px] text-slate-500 font-mono">{inv.customer_phone || '-'}</div>
+                      <div className="font-extrabold text-slate-900 text-sm">{inv.customer_name || 'Walk-in Customer'}</div>
+                      <div className="text-xs text-slate-500 font-mono font-bold">{inv.customer_phone || '-'}</div>
                     </td>
-                    <td className="p-3.5 text-slate-600 font-medium">{inv.cashier_name}</td>
-                    <td className="p-3.5 text-slate-700 font-bold">{inv.item_count} items</td>
-                    <td className="p-3.5 text-right font-black font-mono text-xs text-slate-900">
+                    <td className="p-3.5 text-slate-800 font-semibold text-xs">{inv.cashier_name}</td>
+                    <td className="p-3.5 text-slate-900 font-black text-xs">{inv.item_count} items</td>
+                    <td className="p-3.5 text-right font-black font-mono text-sm sm:text-base text-slate-900">
                       ₹{Number(inv.grand_total).toFixed(2)}
                     </td>
                     <td className="p-3.5 text-center">
                       <span
-                        className={`inline-block rounded-md px-2 py-0.5 text-[10px] font-bold border ${
+                        className={`inline-block rounded-md px-2.5 py-1 text-xs font-black border ${
                           inv.payment_status === 'PAID'
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
                             : inv.payment_status === 'PARTIAL'
-                            ? 'bg-amber-50 text-amber-700 border-amber-200'
-                            : 'bg-rose-50 text-rose-700 border-rose-200'
+                            ? 'bg-amber-100 text-amber-800 border-amber-300'
+                            : 'bg-rose-100 text-rose-800 border-rose-300'
                         }`}
                       >
                         {inv.payment_status} ({inv.payment_mode})
@@ -286,16 +286,16 @@ export const SalesHistoryPage: React.FC = () => {
                       <div className="inline-flex items-center gap-1.5">
                         <button
                           onClick={() => handleOpenInvoice(inv.id)}
-                          className="flex items-center gap-1 rounded-lg bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700 hover:bg-blue-100 transition shadow-2xs"
+                          className="flex items-center gap-1.5 rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-extrabold text-blue-700 hover:bg-blue-100 transition shadow-2xs border border-blue-200"
                           title="Print / View Invoice"
                         >
-                          <Printer className="h-3.5 w-3.5" />
+                          <Printer className="h-4 w-4" />
                           <span>Print</span>
                         </button>
                         {hasRole(['ADMIN', 'MANAGER']) && (
                           <button
                             onClick={() => handleOpenReturn(inv.id)}
-                            className="flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600 hover:bg-slate-200 transition shadow-2xs"
+                            className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-extrabold text-slate-700 hover:bg-slate-200 transition shadow-2xs border border-slate-300"
                             title="Process Return (Manager/Admin Only)"
                           >
                             <RotateCcw className="h-3.5 w-3.5" />

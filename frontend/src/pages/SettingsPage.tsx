@@ -222,30 +222,30 @@ export const SettingsPage: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto space-y-5 antialiased">
       {/* Page Header & Tabs */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-200/80 shadow-2xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 shadow-sm">
+        <div className="flex items-center gap-3.5">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-700 border border-blue-300 shadow-2xs">
             <Sliders className="h-6 w-6" />
           </div>
           <div>
-            <h1 className="text-xl font-black text-slate-900 tracking-tight">System Configuration &amp; Administration</h1>
-            <p className="text-xs text-slate-500 mt-0.5">Manage store profile, tax GSTIN, thermal printer headers, and staff accounts</p>
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight">System Configuration &amp; Administration</h1>
+            <p className="text-sm text-slate-600 font-medium mt-0.5">Manage store profile, tax GSTIN, thermal printer headers, and staff accounts</p>
           </div>
         </div>
 
-        <div className="flex rounded-xl bg-slate-100 p-1 text-xs font-bold border border-slate-200/80">
+        <div className="flex rounded-xl bg-slate-100 p-1 text-xs sm:text-sm font-extrabold border border-slate-200">
           <button
             onClick={() => setActiveTab('store')}
-            className={`rounded-lg px-4 py-1.5 transition ${
-              activeTab === 'store' ? 'bg-white text-blue-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+            className={`rounded-lg px-4 py-2 transition ${
+              activeTab === 'store' ? 'bg-white text-blue-700 shadow-xs border border-slate-200/80 font-black' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             Store Profile &amp; Loyalty
           </button>
           <button
             onClick={() => setActiveTab('staff')}
-            className={`rounded-lg px-4 py-1.5 transition ${
-              activeTab === 'staff' ? 'bg-white text-blue-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+            className={`rounded-lg px-4 py-2 transition ${
+              activeTab === 'staff' ? 'bg-white text-blue-700 shadow-xs border border-slate-200/80 font-black' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             Staff &amp; Access Roles
@@ -254,15 +254,15 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {successMsg && (
-        <div className="flex items-center gap-2 rounded-xl bg-emerald-50 border border-emerald-200 p-3.5 text-xs font-bold text-emerald-800 shadow-2xs">
-          <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+        <div className="flex items-center gap-2 rounded-xl bg-emerald-100 border border-emerald-300 p-3.5 text-xs sm:text-sm font-black text-emerald-900 shadow-2xs">
+          <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-700" />
           <span>{successMsg}</span>
         </div>
       )}
 
       {errorMsg && (
-        <div className="flex items-center gap-2 rounded-xl bg-rose-50 border border-rose-200 p-3.5 text-xs font-bold text-rose-700 shadow-2xs">
-          <AlertCircle className="h-4 w-4 shrink-0 text-rose-600" />
+        <div className="flex items-center gap-2 rounded-xl bg-rose-100 border border-rose-300 p-3.5 text-xs sm:text-sm font-black text-rose-900 shadow-2xs">
+          <AlertCircle className="h-5 w-5 shrink-0 text-rose-700" />
           <span>{errorMsg}</span>
         </div>
       )}
@@ -270,128 +270,128 @@ export const SettingsPage: React.FC = () => {
       {/* Tab: Store Profile */}
       {activeTab === 'store' && (
         <form onSubmit={handleSaveSettings} className="space-y-5">
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm space-y-4 text-xs">
-            <h2 className="font-extrabold text-sm text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
-              <Store className="h-4 w-4 text-blue-600" />
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-sm space-y-4">
+            <h2 className="font-black text-base text-slate-900 flex items-center gap-2 border-b border-slate-200 pb-3">
+              <Store className="h-5 w-5 text-blue-600" />
               <span>Store Profile &amp; Tax Registration</span>
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Store / Business Name *</label>
+                <label className="block font-bold text-sm text-slate-800 mb-1">Store / Business Name *</label>
                 <input
                   type="text"
                   required
                   value={settings.store_name || ''}
                   onChange={(e) => setSettings({ ...settings, store_name: e.target.value })}
-                  className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 font-bold focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                  className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 font-extrabold text-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-100"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Store Tagline / Slogan</label>
+                <label className="block font-bold text-sm text-slate-800 mb-1">Store Tagline / Slogan</label>
                 <input
                   type="text"
                   value={settings.tagline || ''}
                   onChange={(e) => setSettings({ ...settings, tagline: e.target.value })}
                   placeholder="Quality Groceries & Fresh Everyday"
-                  className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 focus:border-blue-500 focus:outline-none"
+                  className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 font-semibold text-sm focus:border-blue-600 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">GSTIN (15 Digits) *</label>
+                <label className="block font-bold text-sm text-slate-800 mb-1">GSTIN (15 Digits) *</label>
                 <input
                   type="text"
                   required
                   value={settings.gstin || ''}
                   onChange={(e) => setSettings({ ...settings, gstin: e.target.value })}
-                  className="w-full rounded-xl border border-slate-300 p-2.5 font-mono text-slate-900 font-bold focus:border-blue-500 focus:outline-none"
+                  className="w-full rounded-xl border border-slate-300 p-2.5 font-mono text-slate-900 font-black text-sm focus:border-blue-600 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">PAN Number</label>
+                <label className="block font-bold text-sm text-slate-800 mb-1">PAN Number</label>
                 <input
                   type="text"
                   value={settings.pan_number || ''}
                   onChange={(e) => setSettings({ ...settings, pan_number: e.target.value })}
-                  className="w-full rounded-xl border border-slate-300 p-2.5 font-mono text-slate-900 focus:border-blue-500 focus:outline-none"
+                  className="w-full rounded-xl border border-slate-300 p-2.5 font-mono text-slate-900 font-bold text-sm focus:border-blue-600 focus:outline-none"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block font-bold text-slate-700 mb-1">Address Line 1 *</label>
+                <label className="block font-bold text-sm text-slate-800 mb-1">Address Line 1 *</label>
                 <input
                   type="text"
                   required
                   value={settings.address_line1 || ''}
                   onChange={(e) => setSettings({ ...settings, address_line1: e.target.value })}
-                  className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 focus:border-blue-500 focus:outline-none"
+                  className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 font-semibold text-sm focus:border-blue-600 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">City *</label>
+                <label className="block font-bold text-sm text-slate-800 mb-1">City *</label>
                 <input
                   type="text"
                   required
                   value={settings.city || ''}
                   onChange={(e) => setSettings({ ...settings, city: e.target.value })}
-                  className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 focus:border-blue-500 focus:outline-none"
+                  className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 font-semibold text-sm focus:border-blue-600 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">State *</label>
+                <label className="block font-bold text-sm text-slate-800 mb-1">State *</label>
                 <input
                   type="text"
                   required
                   value={settings.state || ''}
                   onChange={(e) => setSettings({ ...settings, state: e.target.value })}
-                  className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 focus:border-blue-500 focus:outline-none"
+                  className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 font-semibold text-sm focus:border-blue-600 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">State Code (GST) *</label>
+                <label className="block font-bold text-sm text-slate-800 mb-1">State Code (GST) *</label>
                 <input
                   type="text"
                   required
                   value={settings.state_code || ''}
                   onChange={(e) => setSettings({ ...settings, state_code: e.target.value })}
-                  className="w-full rounded-xl border border-slate-300 p-2.5 font-mono text-slate-900 focus:border-blue-500 focus:outline-none"
+                  className="w-full rounded-xl border border-slate-300 p-2.5 font-mono text-slate-900 font-bold text-sm focus:border-blue-600 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Postal Code (Pincode)</label>
+                <label className="block font-bold text-sm text-slate-800 mb-1">Postal Code (Pincode)</label>
                 <input
                   type="text"
                   value={settings.pincode || ''}
                   onChange={(e) => setSettings({ ...settings, pincode: e.target.value })}
-                  className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 focus:border-blue-500 focus:outline-none"
+                  className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 font-semibold text-sm focus:border-blue-600 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Customer Support Phone *</label>
+                <label className="block font-bold text-sm text-slate-800 mb-1">Customer Support Phone *</label>
                 <input
                   type="text"
                   required
                   value={settings.phone || ''}
                   onChange={(e) => setSettings({ ...settings, phone: e.target.value })}
-                  className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 focus:border-blue-500 focus:outline-none"
+                  className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 font-semibold text-sm focus:border-blue-600 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Support Email</label>
+                <label className="block font-bold text-sm text-slate-800 mb-1">Support Email</label>
                 <input
                   type="email"
                   value={settings.email || ''}
                   onChange={(e) => setSettings({ ...settings, email: e.target.value })}
-                  className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 focus:border-blue-500 focus:outline-none"
+                  className="w-full rounded-xl border border-slate-300 p-2.5 text-slate-900 font-semibold text-sm focus:border-blue-600 focus:outline-none"
                 />
               </div>
             </div>

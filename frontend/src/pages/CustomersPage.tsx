@@ -83,19 +83,19 @@ export const CustomersPage: React.FC = () => {
   return (
     <div className="space-y-5 antialiased">
       {/* Top Header Card */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-200/80 shadow-2xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 shadow-sm">
+        <div className="flex items-center gap-3.5">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-700 border border-blue-300 shadow-2xs">
             <Users className="h-6 w-6" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-black text-slate-900 tracking-tight">Customer Directory &amp; Credit Ledgers</h1>
-              <span className="rounded-full bg-slate-100 text-slate-700 text-xs font-bold px-2.5 py-0.5 border border-slate-200">
+            <div className="flex items-center gap-2.5">
+              <h1 className="text-2xl font-black text-slate-900 tracking-tight">Customer Directory &amp; Credit Ledgers</h1>
+              <span className="rounded-full bg-slate-100 text-slate-800 text-xs font-black px-3 py-1 border border-slate-300">
                 {customers.length} accounts
               </span>
             </div>
-            <p className="text-xs text-slate-500 mt-0.5">Manage customer phone numbers, loyalty point balances and Khata credit</p>
+            <p className="text-sm text-slate-600 font-medium mt-0.5">Manage customer phone numbers, loyalty point balances and Khata credit</p>
           </div>
         </div>
 
@@ -104,9 +104,9 @@ export const CustomersPage: React.FC = () => {
             setErrorMsg(null);
             setIsModalOpen(true);
           }}
-          className="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-xs font-black text-white shadow-md shadow-blue-500/20 hover:bg-blue-700 active:scale-[0.99] transition"
+          className="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-black text-white shadow-md shadow-blue-600/30 hover:bg-blue-700 active:scale-[0.99] transition"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-4.5 w-4.5" />
           <span>Add New Customer</span>
         </button>
       </div>
@@ -114,13 +114,13 @@ export const CustomersPage: React.FC = () => {
       {/* Filter / Search Bar */}
       <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-sm max-w-lg">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3.5 top-2.5 h-4 w-4 text-slate-400" />
+          <Search className="pointer-events-none absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by customer name or 10-digit mobile phone..."
-            className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 pl-10 pr-3 text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"
+            className="w-full rounded-xl border border-slate-300 bg-slate-50 py-2.5 pl-10 pr-3 text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition"
           />
         </div>
       </div>
@@ -128,9 +128,9 @@ export const CustomersPage: React.FC = () => {
       {/* Customers Table */}
       <div className="rounded-2xl border border-slate-200/90 bg-white shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
+          <table className="w-full text-left text-xs sm:text-sm border-collapse">
             <thead>
-              <tr className="bg-slate-100/80 text-slate-600 font-extrabold border-b border-slate-200 uppercase tracking-wider text-[10px]">
+              <tr className="bg-slate-100 text-slate-800 font-black border-b border-slate-300 uppercase tracking-wider text-xs">
                 <th className="p-3.5">Customer Name</th>
                 <th className="p-3.5">Mobile Phone</th>
                 <th className="p-3.5 text-center">Loyalty Rewards</th>
@@ -140,59 +140,59 @@ export const CustomersPage: React.FC = () => {
                 <th className="p-3.5 text-right">Khata Balance (₹)</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-200">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="p-10 text-center text-slate-400">
+                  <td colSpan={7} className="p-10 text-center text-slate-500 font-semibold">
                     <div className="flex flex-col items-center gap-2">
-                      <div className="h-6 w-6 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
-                      <span className="text-xs font-semibold">Loading customer ledgers...</span>
+                      <div className="h-7 w-7 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+                      <span className="text-sm font-bold">Loading customer ledgers...</span>
                     </div>
                   </td>
                 </tr>
               ) : customers.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="p-10 text-center text-slate-400">
+                  <td colSpan={7} className="p-10 text-center text-slate-500 font-semibold">
                     No customers found matching your search.
                   </td>
                 </tr>
               ) : (
                 customers.map((c) => (
                   <tr key={c.id} className="hover:bg-slate-50/70 transition">
-                    <td className="p-3.5 font-extrabold text-slate-900 text-xs">
+                    <td className="p-3.5 font-extrabold text-slate-900 text-sm">
                       {c.name}
                       {c.id === 1 && (
-                        <span className="ml-2 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-0.5 border border-emerald-200">
+                        <span className="ml-2 rounded-md bg-emerald-100 text-emerald-800 text-xs font-black px-2.5 py-0.5 border border-emerald-300">
                           Walk-in Default
                         </span>
                       )}
                     </td>
-                    <td className="p-3.5 font-mono font-bold text-slate-700 text-xs">{c.phone}</td>
+                    <td className="p-3.5 font-mono font-bold text-slate-900 text-sm">{c.phone}</td>
                     <td className="p-3.5 text-center">
                       {c.id === 1 ? (
-                        <span className="text-slate-400 font-mono text-xs">-</span>
+                        <span className="text-slate-400 font-mono text-xs font-bold">-</span>
                       ) : (
                         <div className="inline-flex items-center gap-1.5">
-                          <span className="inline-flex items-center gap-1 rounded-lg bg-amber-50 border border-amber-200/90 text-amber-800 text-[11px] font-bold px-2 py-0.5 shadow-2xs">
-                            <Star className="h-3 w-3 fill-amber-400 text-amber-500" />
+                          <span className="inline-flex items-center gap-1 rounded-lg bg-amber-100 border border-amber-300 text-amber-950 text-xs font-black px-2.5 py-1 shadow-2xs">
+                            <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-600" />
                             <span>{c.loyalty_points || 0} pts</span>
                           </span>
                           <button
                             type="button"
                             onClick={() => openLoyaltyHistory(c)}
-                            className="rounded-lg p-1 text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition"
+                            className="rounded-lg p-1.5 text-slate-500 hover:text-blue-700 hover:bg-blue-100 transition"
                             title="View Points History & Ledger"
                           >
-                            <History className="h-3.5 w-3.5" />
+                            <History className="h-4 w-4" />
                           </button>
                         </div>
                       )}
                     </td>
-                    <td className="p-3.5 font-mono text-slate-500 text-[11px]">{c.gstin || '-'}</td>
-                    <td className="p-3.5 text-slate-600 truncate max-w-xs">{c.address || '-'}</td>
-                    <td className="p-3.5 text-right font-medium text-slate-500 font-mono">₹{Number(c.credit_limit).toFixed(2)}</td>
-                    <td className="p-3.5 text-right font-black font-mono text-xs">
-                      <span className={Number(c.current_balance) > 0 ? 'text-rose-600' : 'text-emerald-700'}>
+                    <td className="p-3.5 font-mono font-bold text-slate-700 text-xs">{c.gstin || '-'}</td>
+                    <td className="p-3.5 text-slate-700 font-medium truncate max-w-xs text-xs">{c.address || '-'}</td>
+                    <td className="p-3.5 text-right font-bold text-slate-600 font-mono text-xs">₹{Number(c.credit_limit).toFixed(2)}</td>
+                    <td className="p-3.5 text-right font-black font-mono text-sm">
+                      <span className={Number(c.current_balance) > 0 ? 'text-rose-700' : 'text-emerald-800'}>
                         ₹{Number(c.current_balance).toFixed(2)}
                       </span>
                     </td>

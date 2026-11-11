@@ -87,35 +87,35 @@ export const ExpensesPage: React.FC = () => {
   return (
     <div className="space-y-5 antialiased">
       {/* Top Header Card */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-rose-50 text-rose-600 border border-rose-200/80 shadow-2xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 shadow-sm">
+        <div className="flex items-center gap-3.5">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-rose-100 text-rose-700 border border-rose-300 shadow-2xs">
             <Wallet className="h-6 w-6" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-black text-slate-900 tracking-tight">Operating Expenses &amp; Petty Cash</h1>
-              <span className="rounded-full bg-slate-100 text-slate-700 text-xs font-bold px-2.5 py-0.5 border border-slate-200">
+            <div className="flex items-center gap-2.5">
+              <h1 className="text-2xl font-black text-slate-900 tracking-tight">Operating Expenses &amp; Petty Cash</h1>
+              <span className="rounded-full bg-slate-100 text-slate-800 text-xs font-black px-3 py-1 border border-slate-300">
                 {expenses.length} records
               </span>
             </div>
-            <p className="text-xs text-slate-500 mt-0.5">Track store overheads, electricity, rent, wages and maintenance payouts</p>
+            <p className="text-sm text-slate-600 font-medium mt-0.5">Track store overheads, electricity, rent, wages and maintenance payouts</p>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="rounded-xl bg-rose-50 border border-rose-200/80 px-3.5 py-2 text-xs">
-            <span className="text-rose-700 font-bold">Total Expenses: </span>
-            <strong className="text-rose-950 font-mono text-sm font-black">₹{totalExpenseAmount.toFixed(2)}</strong>
+          <div className="rounded-xl bg-rose-100 border border-rose-300 px-4 py-2 text-xs">
+            <span className="text-rose-800 font-extrabold">Total Expenses: </span>
+            <strong className="text-rose-950 font-mono text-base font-black">₹{totalExpenseAmount.toFixed(2)}</strong>
           </div>
           <button
             onClick={() => {
               setErrorMsg(null);
               setIsModalOpen(true);
             }}
-            className="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-xs font-black text-white shadow-md shadow-blue-500/20 hover:bg-blue-700 active:scale-[0.99] transition"
+            className="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-black text-white shadow-md shadow-blue-600/30 hover:bg-blue-700 active:scale-[0.99] transition"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-4.5 w-4.5" />
             <span>Record Expense</span>
           </button>
         </div>
@@ -126,7 +126,7 @@ export const ExpensesPage: React.FC = () => {
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
-          className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 text-xs font-bold text-slate-700 focus:bg-white focus:outline-none focus:border-blue-500 transition"
+          className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3.5 py-2.5 text-sm font-bold text-slate-800 focus:bg-white focus:outline-none focus:border-blue-600 transition"
         >
           <option value="">All Expense Categories</option>
           <option value="UTILITIES">Utilities (Electricity, Water, Internet)</option>
@@ -142,9 +142,9 @@ export const ExpensesPage: React.FC = () => {
       {/* Expenses Table */}
       <div className="rounded-2xl border border-slate-200/90 bg-white shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
+          <table className="w-full text-left text-xs sm:text-sm border-collapse">
             <thead>
-              <tr className="bg-slate-100/80 text-slate-600 font-extrabold border-b border-slate-200 uppercase tracking-wider text-[10px]">
+              <tr className="bg-slate-100 text-slate-800 font-black border-b border-slate-300 uppercase tracking-wider text-xs">
                 <th className="p-3.5">Expense #</th>
                 <th className="p-3.5">Date</th>
                 <th className="p-3.5">Title &amp; Particulars</th>
@@ -154,39 +154,39 @@ export const ExpensesPage: React.FC = () => {
                 <th className="p-3.5 text-right">Amount (₹)</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-200">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="p-10 text-center text-slate-400">
+                  <td colSpan={7} className="p-10 text-center text-slate-500 font-semibold">
                     <div className="flex flex-col items-center gap-2">
-                      <div className="h-6 w-6 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
-                      <span className="text-xs font-semibold">Loading expense ledger...</span>
+                      <div className="h-7 w-7 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+                      <span className="text-sm font-bold">Loading expense ledger...</span>
                     </div>
                   </td>
                 </tr>
               ) : expenses.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="p-10 text-center text-slate-400">
+                  <td colSpan={7} className="p-10 text-center text-slate-500 font-semibold">
                     No operating expenses recorded for this category filter.
                   </td>
                 </tr>
               ) : (
                 expenses.map((e) => (
                   <tr key={e.id} className="hover:bg-slate-50/70 transition">
-                    <td className="p-3.5 font-mono font-bold text-slate-700 text-xs">{e.expense_number}</td>
-                    <td className="p-3.5 font-mono text-[11px] text-slate-600">{new Date(e.expense_date).toLocaleDateString()}</td>
+                    <td className="p-3.5 font-mono font-black text-slate-800 text-xs sm:text-sm">{e.expense_number}</td>
+                    <td className="p-3.5 font-mono text-xs font-bold text-slate-700">{new Date(e.expense_date).toLocaleDateString()}</td>
                     <td className="p-3.5">
-                      <div className="font-extrabold text-slate-900 text-xs">{e.title}</div>
-                      {e.description && <div className="text-[10px] text-slate-400 mt-0.5">{e.description}</div>}
+                      <div className="font-extrabold text-slate-900 text-sm">{e.title}</div>
+                      {e.description && <div className="text-xs text-slate-500 mt-0.5">{e.description}</div>}
                     </td>
                     <td className="p-3.5">
-                      <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-700 border border-slate-200/80">
+                      <span className="rounded-md bg-slate-100 px-2.5 py-1 text-xs font-black text-slate-800 border border-slate-300">
                         {e.category}
                       </span>
                     </td>
-                    <td className="p-3.5 text-slate-700 font-medium">{e.paid_to || '-'}</td>
-                    <td className="p-3.5 text-slate-600 font-semibold">{e.account_name} ({e.payment_mode})</td>
-                    <td className="p-3.5 text-right font-black font-mono text-sm text-rose-700">
+                    <td className="p-3.5 text-slate-800 font-bold text-xs">{e.paid_to || '-'}</td>
+                    <td className="p-3.5 text-slate-700 font-semibold text-xs">{e.account_name} ({e.payment_mode})</td>
+                    <td className="p-3.5 text-right font-black font-mono text-sm sm:text-base text-rose-700">
                       ₹{Number(e.amount).toFixed(2)}
                     </td>
                   </tr>
