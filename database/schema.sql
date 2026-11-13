@@ -36,6 +36,11 @@ CREATE TABLE IF NOT EXISTS `business_settings` (
   `invoice_prefix` VARCHAR(10) NOT NULL DEFAULT 'INV-',
   `thermal_receipt_header` TEXT,
   `thermal_receipt_footer` TEXT,
+  `loyalty_enabled` TINYINT(1) NOT NULL DEFAULT 1,
+  `loyalty_min_purchase` DECIMAL(12,2) NOT NULL DEFAULT 100.00,
+  `loyalty_points_per_invoice` INT NOT NULL DEFAULT 1,
+  `loyalty_redemption_rate` DECIMAL(12,2) NOT NULL DEFAULT 1.00,
+  `loyalty_redemption_enabled` TINYINT(1) NOT NULL DEFAULT 1,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -235,6 +240,11 @@ CREATE TABLE IF NOT EXISTS `sales_invoices` (
   `status` ENUM('COMPLETED', 'HOLD', 'CANCELLED', 'RETURNED') NOT NULL DEFAULT 'COMPLETED',
   `subtotal` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
   `total_discount` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+  `loyalty_points_earned` INT NOT NULL DEFAULT 0,
+  `loyalty_points_redeemed` INT NOT NULL DEFAULT 0,
+  `loyalty_discount_amount` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+  `customer_points_before` INT NOT NULL DEFAULT 0,
+  `customer_points_after` INT NOT NULL DEFAULT 0,
   `taxable_amount` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
   `cgst_amount` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
   `sgst_amount` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
@@ -269,6 +279,7 @@ CREATE TABLE IF NOT EXISTS `sales_invoice_items` (
   `product_id` INT UNSIGNED NOT NULL,
   `batch_id` INT UNSIGNED DEFAULT NULL,
   `item_name` VARCHAR(200) NOT NULL,
+  `barcode` VARCHAR(60) DEFAULT NULL,
   `hsn_code` VARCHAR(20) DEFAULT NULL,
   `unit_code` VARCHAR(20) NOT NULL DEFAULT 'PCS',
   `quantity` DECIMAL(12,3) NOT NULL,
@@ -303,7 +314,7 @@ CREATE TABLE IF NOT EXISTS `payments` (
   `reference_id` INT UNSIGNED NOT NULL,
   `customer_id` INT UNSIGNED DEFAULT NULL,
   `supplier_id` INT UNSIGNED DEFAULT NULL,
-  `payment_mode` ENUM('CASH', 'UPI', 'CARD', 'BANK_TRANSFER', 'CHEQUE') NOT NULL DEFAULT 'CASH',
+  `payment_mode` ENUM('CASH', 'UPI', 'CARD', 'BANK_TRANSFER', 'CHEQUE', 'CREDIT', 'KHATA') NOT NULL DEFAULT 'CASH',
   `account_id` INT UNSIGNED NOT NULL,
   `amount` DECIMAL(12,2) NOT NULL,
   `tender_amount` DECIMAL(12,2) DEFAULT NULL,
@@ -553,6 +564,25 @@ CREATE TABLE IF NOT EXISTS `audit_logs` (
   PRIMARY KEY (`id`),
   KEY `idx_audit_user` (`user_id`),
   KEY `idx_audit_entity` (`entity_name`, `entity_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------------------
+-- 25. Loyalty Transactions
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `loyalty_transactions` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `customer_id` INT UNSIGNED NOT NULL,
+  `invoice_id` INT UNSIGNED DEFAULT NULL,
+  `transaction_type` ENUM('EARN', 'REDEEM', 'REVERSAL', 'ADJUSTMENT') NOT NULL,
+  `points` INT NOT NULL,
+  `rupee_value` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+  `description` VARCHAR(255) DEFAULT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_lt_customer` (`customer_id`),
+  KEY `idx_lt_invoice` (`invoice_id`),
+  CONSTRAINT `fk_lt_customer` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_lt_invoice` FOREIGN KEY (`invoice_id`) REFERENCES `sales_invoices` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;
